@@ -1,0 +1,1446 @@
+type AbilityBonus {
+  ability_score: AbilityScore!
+  bonus: Int!
+}
+
+type AbilityBonusChoice {
+  choose: Int!
+  from: AbilityBonusOptionSet!
+  type: String!
+}
+
+type AbilityBonusOption {
+  ability_score: AbilityScore!
+  bonus: Int!
+  option_type: String!
+}
+
+type AbilityBonusOptionSet {
+  option_set_type: String!
+  options: [AbilityBonusOption!]!
+}
+
+type AbilityScore {
+  desc: [String!]!
+  full_name: String!
+  index: String!
+  name: String!
+  skills(name: String, order_direction: OrderByDirection): [Skill!]!
+}
+
+type AbilityScorePrerequisite {
+  ability_score: AbilityScore!
+  minimum_score: Int!
+}
+
+type Action {
+  action_name: String!
+  count: ActionCount!
+  type: String!
+}
+
+"""Int or string"""
+scalar ActionCount
+
+type ActionDamage {
+  choose: Int
+  damage_dice: String
+  damage_type: DamageType
+  dc: ActionDc
+  from: DamageOptionSet
+  type: String
+}
+
+type ActionDc {
+  success: DcSuccess!
+  type: AbilityScore!
+  value: Int!
+}
+
+type ActionOption {
+  action_name: String!
+  count: ActionCount!
+  option_type: String!
+  type: String
+}
+
+type Alignment {
+  abbreviation: String!
+  desc: String!
+  index: String!
+  name: String!
+}
+
+type Ammunition implements IEquipment & IEquipmentBase & IGear {
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  gear_category: EquipmentCategory!
+  index: String!
+  name: String!
+  quantity: Int!
+  weight: Float
+}
+
+type AreaOfEffect {
+  size: Int!
+  type: AreaOfEffectType!
+}
+
+input AreaOfEffectFilter {
+  size: IntFilter
+  type: AreaOfEffectTypeFilter
+}
+
+enum AreaOfEffectType {
+  CONE
+  CUBE
+  CYLINDER
+  LINE
+  SPHERE
+}
+
+"""
+AreaOfEffectType ("SPHERE", "CUBE", "CYLINDER", "LINE", "CONE") or list of AreaOfEffectTypes
+"""
+scalar AreaOfEffectTypeFilter
+
+type Armor implements IEquipment & IEquipmentBase {
+  armor_category: EquipmentCategory!
+  armor_class: ArmorClass!
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  stealth_disadvantage: Boolean!
+  str_minimum: Int!
+  weight: Float
+}
+
+type ArmorClass {
+  base: Int!
+  dex_bonus: Boolean!
+  max_bonus: Int
+}
+
+type Attack {
+  damage: [Damage!]
+  dc: ActionDc!
+  name: String!
+}
+
+type Background {
+  bonds: StringChoice!
+  feature: BackgroundFeature!
+  flaws: StringChoice!
+  ideals: IdealChoice!
+  index: String!
+  language_options: LanguageChoice!
+  name: String!
+  personality_traits: StringChoice!
+  starting_equipment(name: String): [Quantity!]!
+  starting_equipment_options: [EquipmentCategoryChoice!]!
+  starting_proficiencies(name: String): [Proficiency!]!
+}
+
+type BackgroundFeature {
+  desc: [String!]!
+  name: String!
+}
+
+type BarbarianSpecific {
+  brutal_critical_dice: Int!
+  rage_count: Int!
+  rage_damage_bonus: Int!
+}
+
+type BardSpecific {
+  bardic_inspiration_die: Int!
+  magical_secrets_max_5: Int!
+  magical_secrets_max_7: Int!
+  magical_secrets_max_9: Int!
+  song_of_rest_die: Int!
+}
+
+type BreathChoice {
+  choose: Int!
+  from: BreathOptionSet!
+  type: String!
+}
+
+type BreathOption {
+  damage: [Damage!]
+  dc: ActionDc!
+  name: String!
+  option_type: String!
+}
+
+type BreathOptionSet {
+  option_set_type: String!
+  options: [BreathOption!]!
+}
+
+type BreathWeaponDamage {
+  damage_at_character_level: [DamageAtLevel!]!
+  damage_type: DamageType!
+}
+
+type BreathWeaponDc {
+  success: DcSuccess!
+  type: AbilityScore!
+}
+
+type BreathWeaponTrait {
+  area_of_effect: AreaOfEffect!
+  damage: [BreathWeaponDamage!]!
+  dc: BreathWeaponDc!
+  desc: String!
+  name: String!
+  usage: BreathWeaponUsage!
+}
+
+type BreathWeaponUsage {
+  times: Int!
+  type: UsageType!
+}
+
+type Class {
+  class_levels: [Level!]!
+  hit_die: Int!
+  index: String!
+  multi_classing: Multiclassing!
+  name: String!
+  proficiencies(name: String): [Proficiency!]!
+  proficiency_choices: [ProficiencyChoice!]!
+  saving_throws: [AbilityScore!]!
+  spellcasting: ClassSpellcasting
+  spells(area_of_effect: AreaOfEffectFilter, attack_type: SpellAttackTypeFilter, casting_time: StringFilter, concentration: Boolean, damage_type: StringFilter, dc_type: StringFilter, level: IntFilter, limit: Int! = 100, name: String, order: SpellOrder, range: StringFilter, ritual: Boolean, school: StringFilter, skip: Int, subclass: StringFilter): [Spell!]
+  starting_equipment: [Quantity!]!
+  starting_equipment_options: [StartingEquipmentChoice!]!
+  subclasses(name: String): [Subclass!]!
+}
+
+input ClassOrder {
+  by: ClassOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: ClassOrder
+}
+
+enum ClassOrderBy {
+  HIT_DIE
+  NAME
+}
+
+union ClassSpecific = BarbarianSpecific | BardSpecific | ClericSpecific | DruidSpecific | FighterSpecific | MonkSpecific | PaladinSpecific | RangerSpecific | RogueSpecific | SorcererSpecific | WarlockSpecific | WizardSpecific
+
+type ClassSpellcasting {
+  info: [SpellcastingInfo!]!
+  level: Int!
+  spellcasting_ability: AbilityScore!
+}
+
+type ClericSpecific {
+  channel_divinity_charges: Int!
+  destroy_undead_cr: Float!
+}
+
+type Condition {
+  desc: [String!]!
+  index: String!
+  name: String!
+}
+
+type Cost {
+  quantity: Int!
+  unit: Currency!
+}
+
+type CountedReferenceOption {
+  count: Int!
+  of: IEquipment!
+  option_type: String!
+  prerequisites: [ProficiencyPrerequisite!]
+}
+
+enum Currency {
+  CP
+  GP
+  SP
+}
+
+type Damage {
+  damage_dice: String!
+  damage_type: DamageType!
+}
+
+type DamageAtLevel {
+  damage: String!
+  level: Int!
+}
+
+type DamageOption {
+  damage_dice: String!
+  damage_type: DamageType!
+  notes: String
+  option_type: String!
+}
+
+type DamageOptionSet {
+  option_set_type: String!
+  options: [DamageOption!]!
+}
+
+type DamageType {
+  desc: [String!]!
+  index: String!
+  name: String!
+}
+
+enum DcSuccess {
+  HALF
+  NONE
+  OTHER
+}
+
+type DevotionSpecific {
+  aura_range: Int!
+}
+
+type Dice {
+  dice_count: Int!
+  dice_value: Int!
+}
+
+type DruidSpecific {
+  wild_shape_fly: Boolean!
+  wild_shape_max_cr: Float!
+  wild_shape_swim: Boolean!
+}
+
+type EquipmentCategory {
+  equipment(limit: Int! = 100, name: String, order: EquipmentCategoryOrder, skip: Int): [IEquipmentBase!]!
+  index: String!
+  name: String!
+}
+
+type EquipmentCategoryChoice {
+  choose: Int!
+  from: EquipmentCategoryOptionSet!
+  type: String!
+}
+
+type EquipmentCategoryChoiceOption {
+  choice: EquipmentCategoryChoice!
+  option_type: String!
+}
+
+type EquipmentCategoryOptionSet {
+  equipment_category: EquipmentCategory!
+  option_set_type: String!
+}
+
+input EquipmentCategoryOrder {
+  by: EquipmentCategoryOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: EquipmentCategoryOrder
+}
+
+enum EquipmentCategoryOrderBy {
+  NAME
+  WEIGHT
+}
+
+union EquipmentMultipleItem = CountedReferenceOption | EquipmentCategoryChoiceOption
+
+type EquipmentMultipleOption {
+  items: [EquipmentMultipleItem!]!
+  option_type: String!
+}
+
+union EquipmentOption = CountedReferenceOption | EquipmentCategoryChoiceOption | EquipmentMultipleOption
+
+type EquipmentOptionSet {
+  option_set_type: String!
+  options: [EquipmentOption!]!
+}
+
+input EquipmentOrder {
+  by: EquipmentOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: EquipmentOrder
+}
+
+enum EquipmentOrderBy {
+  EQUIPMENT_CATEGORY
+  NAME
+  WEIGHT
+}
+
+type ExpertiseChoice {
+  choose: Int!
+  from: ExpertiseOptionSet!
+  type: String!
+}
+
+type ExpertiseMultipleOption {
+  items: [ProficiencyOption!]!
+  option_type: String!
+}
+
+union ExpertiseOption = ExpertiseMultipleOption | ProficiencyChoiceOption | ProficiencyReferenceOption
+
+type ExpertiseOptionSet {
+  option_set_type: String!
+  options: [ExpertiseOption!]!
+}
+
+type Feat {
+  desc: [String!]!
+  index: String!
+  name: String!
+  prerequisites: [AbilityScorePrerequisite!]!
+}
+
+type Feature {
+  class: Class!
+  desc: [String!]!
+  feature_specific: FeatureSpecific
+  index: String!
+  level: Int!
+  name: String!
+  parent: Feature
+  prerequisites: [FeaturePrerequisite!]!
+  reference: String
+  subclass: Subclass
+}
+
+type FeatureChoice {
+  choose: Int!
+  from: FeatureOptionSet!
+  type: String!
+}
+
+type FeatureOption {
+  item: Feature!
+  option_type: String!
+}
+
+type FeatureOptionSet {
+  option_set_type: String!
+  options: [FeatureOption!]!
+}
+
+input FeatureOrder {
+  by: FeatureOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: FeatureOrder
+}
+
+enum FeatureOrderBy {
+  CLASS
+  LEVEL
+  NAME
+  SUBCLASS
+}
+
+type FeaturePrerequisite {
+  feature: Feature
+  level: Int
+  spell: Spell
+  type: String!
+}
+
+type FeatureSpecific {
+  expertise_options: ExpertiseChoice
+  invocations: [Feature!]
+  subfeature_options: FeatureChoice
+}
+
+type FighterSpecific {
+  action_surges: Int!
+  extra_attacks: Int!
+  indomitable_uses: Int!
+}
+
+"""
+Float, list of floats, or object with gte (>=), gt (>), lte (<=), and lt (<) properties for range of values
+"""
+scalar FloatFilter
+
+type Gear implements IEquipment & IEquipmentBase & IGear {
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  gear_category: EquipmentCategory!
+  index: String!
+  name: String!
+  weight: Float
+}
+
+type HealingAtLevel {
+  healing: String!
+  level: Int!
+}
+
+interface IEquipment implements IEquipmentBase {
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  weight: Float
+}
+
+interface IEquipmentBase {
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+}
+
+interface IGear implements IEquipment & IEquipmentBase {
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  gear_category: EquipmentCategory!
+  index: String!
+  name: String!
+  weight: Float
+}
+
+type IdealChoice {
+  choose: Int!
+  from: IdealOptionSet!
+  type: String!
+}
+
+type IdealOption {
+  alignments: [Alignment!]!
+  desc: String!
+  option_type: String!
+}
+
+type IdealOptionSet {
+  option_set_type: String!
+  options: [IdealOption!]!
+}
+
+"""
+Int, list of ints, or object with gte (>=), gt (>), lte (<=), and lt (<) properties for range of values
+"""
+scalar IntFilter
+
+type Language {
+  desc: String
+  index: String!
+  name: String!
+  script: LanguageScript
+  type: LanguageType!
+  typical_speakers: [String!]!
+}
+
+type LanguageChoice {
+  choose: Int!
+  from: LanguageOptionSet!
+  type: String!
+}
+
+type LanguageOption {
+  item: Language!
+  option_type: String!
+}
+
+type LanguageOptionSet {
+  option_set_type: String!
+  options: [LanguageOption!]!
+}
+
+input LanguageOrder {
+  by: LanguageOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: LanguageOrder
+}
+
+enum LanguageOrderBy {
+  NAME
+  SCRIPT
+  TYPE
+}
+
+enum LanguageScript {
+  CELESTIAL
+  COMMON
+  DRACONIC
+  DWARVISH
+  ELVISH
+  INFERNAL
+}
+
+"""
+LanguageScript ("COMMON", "ELVISH", "DWARVISH", "INFERNAL", "DRACONIC", "CELESTIAL") or list of LanguageScripts
+"""
+scalar LanguageScriptFilter
+
+enum LanguageType {
+  EXOTIC
+  STANDARD
+}
+
+type LegendaryAction {
+  damage: [Damage!]
+  dc: ActionDc
+  desc: String!
+  name: String!
+}
+
+type Level {
+  ability_score_bonuses: Int
+  class: Class!
+  class_specific: ClassSpecific
+  features(name: String, order_direction: OrderByDirection): [Feature!]!
+  index: String!
+  level: Int!
+  prof_bonus: Int
+  spellcasting: LevelSpellcasting
+  subclass: Subclass
+  subclass_specific: SubclassSpecific
+}
+
+input LevelOrder {
+  by: LevelOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: LevelOrder
+}
+
+enum LevelOrderBy {
+  ABILITY_SCORE_BONUSES
+  CLASS
+  LEVEL
+  PROF_BONUS
+  SUBCLASS
+}
+
+type LevelSpellcasting {
+  cantrips_known: Int
+  spell_slots_level_1: Int
+  spell_slots_level_2: Int
+  spell_slots_level_3: Int
+  spell_slots_level_4: Int
+  spell_slots_level_5: Int
+  spell_slots_level_6: Int
+  spell_slots_level_7: Int
+  spell_slots_level_8: Int
+  spell_slots_level_9: Int
+  spells_known: Int
+}
+
+type LoreSpecific {
+  additional_magical_secrets_max_lvl: Int!
+}
+
+type MagicItem implements IEquipmentBase {
+  desc: [String!]!
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  rarity: MagicItemRarity!
+}
+
+input MagicItemOrder {
+  by: MagicItemOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: MagicItemOrder
+}
+
+enum MagicItemOrderBy {
+  EQUIPMENT_CATEGORY
+  NAME
+}
+
+enum MagicItemRarity {
+  ARTIFACT
+  COMMON
+  LEGENDARY
+  RARE
+  UNCOMMON
+  VARIES
+  VERY_RARE
+}
+
+type MagicSchool {
+  desc: String!
+  index: String!
+  name: String!
+  spells(area_of_effect: AreaOfEffectFilter, attack_type: SpellAttackTypeFilter, casting_time: StringFilter, class: StringFilter, concentration: Boolean, damage_type: StringFilter, dc_type: StringFilter, level: IntFilter, limit: Int! = 100, name: String, order: SpellOrder, range: StringFilter, ritual: Boolean, skip: Int, subclass: StringFilter): [Spell!]!
+}
+
+type MonkSpecific {
+  ki_points: Int!
+  martial_arts: Dice!
+  unarmored_movement: Int!
+}
+
+type Monster {
+  actions: [MonsterAction!]
+  alignment: String!
+  armor_class: [MonsterArmorClass]
+  challenge_rating: Float!
+  charisma: Int!
+  condition_immunities: [Condition!]!
+  constitution: Int!
+  damage_immunities: [String!]!
+  damage_resistances: [String!]!
+  damage_vulnerabilities: [String!]!
+  desc: String
+  dexterity: Int!
+  forms: [Monster!]
+  hit_dice: String!
+  hit_points: Int!
+  hit_points_roll: String!
+  image: String
+  index: String!
+  intelligence: Int!
+  languages: String!
+  legendary_actions: [LegendaryAction!]
+  name: String!
+  proficiencies: [MonsterProficiency!]!
+  proficiency_bonus: Int!
+  reactions: [Reaction!]
+  senses: Senses!
+  size: Size!
+  special_abilities: [SpecialAbility!]
+  speed: MonsterSpeed!
+  strength: Int!
+  subtype: MonsterSubtype
+  type: MonsterType!
+  wisdom: Int!
+  xp: Int!
+}
+
+type MonsterAction {
+  action_options: MonsterActionChoice
+  actions: [Action!]
+  attack_bonus: Int
+  attacks: [Attack!]
+  damage: [ActionDamage!]
+  dc: ActionDc
+  desc: String!
+  multiattack_type: String
+  name: String!
+  options: BreathChoice
+  usage: Usage
+}
+
+type MonsterActionChoice {
+  choose: Int!
+  from: MonsterActionOptionSet!
+  type: String!
+}
+
+union MonsterActionOption = ActionOption | MultipleActionOption
+
+type MonsterActionOptionSet {
+  option_set_type: String!
+  options: [MonsterActionOption!]!
+}
+
+type MonsterArmorClass {
+  armor: [Armor]
+  condition: Condition
+  desc: String
+  spell: Spell
+  type: MonsterArmorClassType!
+  value: Int!
+}
+
+enum MonsterArmorClassType {
+  armor
+  condition
+  dex
+  natural
+  spell
+}
+
+input MonsterOrder {
+  by: MonsterOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: MonsterOrder
+}
+
+enum MonsterOrderBy {
+  ARMOR_CLASS
+  CHALLENGE_RATING
+  CHARISMA
+  CONSTITUTION
+  DEXTERITY
+  INTELLIGENCE
+  NAME
+  SIZE
+  STRENGTH
+  SUBTYPE
+  TYPE
+  WISDOM
+  XP
+}
+
+type MonsterProficiency {
+  proficiency: Proficiency!
+  value: Int!
+}
+
+type MonsterSpeed {
+  burrow: String
+  climb: String
+  fly: String
+  hover: Boolean
+  swim: String
+  walk: String
+}
+
+type MonsterSpell {
+  spell: Spell!
+  usage: Usage
+}
+
+type MonsterSpellSlot {
+  level: Int!
+  slots: Int!
+}
+
+type MonsterSpellcasting {
+  ability: AbilityScore!
+  components_required: [SpellComponent!]
+  dc: Int
+  level: Int
+  modifier: Int
+  school: String
+  slots: [MonsterSpellSlot!]
+  spells: [MonsterSpell!]!
+}
+
+enum MonsterSubtype {
+  ANY_RACE
+  DEMON
+  DEVIL
+  DWARF
+  ELF
+  GNOLL
+  GNOME
+  GOBLINOID
+  GRIMLOCK
+  HUMAN
+  KOBOLD
+  LIZARDFOLK
+  MERFOLK
+  ORC
+  SAHUAGIN
+  SHAPECHANGER
+  TITAN
+}
+
+"""
+MonsterSubtype ("ANY_RACE", "HUMAN", "DWARF", "ELF", "GOBLINOID", "MERFOLK", "SHAPECHANGER", "DEMON", "DEVIL", "ORC", "SAHUAGIN", "TITAN", "KOBOLD", "GNOLL", "GRIMLOCK", "LIZARDFOLK", "GNOME") or list of MonsterSubtypes
+"""
+scalar MonsterSubtypeFilter
+
+enum MonsterType {
+  ABERRATION
+  BEAST
+  CELESTIAL
+  CONSTRUCT
+  DRAGON
+  ELEMENTAL
+  FEY
+  FIEND
+  GIANT
+  HUMANOID
+  MONSTROSITY
+  OOZE
+  PLANT
+  SWARM
+  UNDEAD
+}
+
+"""
+MonsterTypes ("BEAST", "MONSTROSITY", "DRAGON", "HUMANOID", "UNDEAD", "FIEND", "CELESTIAL", "CONSTRUCT", "GIANT", "ELEMENTAL", "FEY", "ABERRATION", "OOZE", "SWARM", "PLANT") or list of MonsterTypes
+"""
+scalar MonsterTypeFilter
+
+type Multiclassing {
+  prerequisite_options: PrerequisiteChoice
+  prerequisites: [AbilityScorePrerequisite!]
+  proficiencies: [Proficiency!]!
+  proficiency_choices: [ProficiencyChoice!]
+}
+
+type MultipleActionOption {
+  items: [ActionOption!]!
+  option_type: String!
+}
+
+enum OrderByDirection {
+  ASCENDING
+  DESCENDING
+}
+
+type Pack implements IEquipment & IEquipmentBase & IGear {
+  contents: [PackQuantity!]!
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  gear_category: EquipmentCategory!
+  index: String!
+  name: String!
+  weight: Float
+}
+
+type PackQuantity {
+  item: IEquipment!
+  quantity: Int!
+}
+
+type PaladinSpecific {
+  aura_range: Int!
+}
+
+type PrerequisiteChoice {
+  choose: Int!
+  from: PrerequisiteOptionSet!
+  type: String!
+}
+
+type PrerequisiteOption {
+  ability_score: AbilityScore!
+  minimum_score: Int!
+  option_type: String!
+}
+
+type PrerequisiteOptionSet {
+  option_set_type: String!
+  options: [PrerequisiteOption!]!
+}
+
+type Proficiency {
+  classes(name: String): [Class!]!
+  index: String!
+  name: String!
+  races(name: String): [ProficiencyRace!]!
+  reference: ProficiencyReference!
+  type: ProficiencyType!
+}
+
+type ProficiencyChoice {
+  choose: Int!
+  desc: String
+  from: ProficiencyOptionSet!
+  type: String!
+}
+
+type ProficiencyChoiceOption {
+  choice: ProficiencyChoice!
+  option_type: String!
+}
+
+union ProficiencyOption = ProficiencyChoiceOption | ProficiencyReferenceOption
+
+type ProficiencyOptionSet {
+  option_set_type: String!
+  options: [ProficiencyOption!]!
+}
+
+input ProficiencyOrder {
+  by: ProficiencyOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: ProficiencyOrder
+}
+
+enum ProficiencyOrderBy {
+  NAME
+  TYPE
+}
+
+type ProficiencyPrerequisite {
+  proficiency: Proficiency!
+  type: String!
+}
+
+interface ProficiencyRace {
+  ability_bonuses: [AbilityBonus!]!
+  index: String!
+  name: String!
+}
+
+union ProficiencyReference = AbilityScore | Ammunition | Armor | EquipmentCategory | Gear | Pack | Skill | Tool | Vehicle | Weapon
+
+type ProficiencyReferenceOption {
+  item: Proficiency!
+  option_type: String!
+}
+
+enum ProficiencyType {
+  ARMOR
+  ARTISANS_TOOLS
+  GAMING_SETS
+  MUSICAL_INSTRUMENTS
+  OTHER
+  SAVING_THROWS
+  SKILLS
+  VEHICLES
+  WEAPONS
+}
+
+"""
+ProficiencyType ("WEAPONS", "ARTISANS_TOOLS", "SKILLS", "ARMOR", "MUSICAL_INSTRUMENTS", "SAVING_THROWS", "OTHER", "GAMING_SETS", "VEHICLES") or list of ProficiencyTypes
+"""
+scalar ProficiencyTypeFilter
+
+type Quantity {
+  equipment: IEquipment!
+  quantity: Int!
+}
+
+type Query {
+  abilityScore(index: String): AbilityScore
+  abilityScores(full_name: String, name: String, order_direction: OrderByDirection): [AbilityScore!]
+  alignment(index: String): Alignment
+  alignments(name: String, order_direction: OrderByDirection): [Alignment!]
+  background(index: String): Background
+  backgrounds(name: String, order_direction: OrderByDirection): [Background!]!
+  class(index: String): Class
+  classes(hit_die: IntFilter, name: String, order: ClassOrder): [Class!]!
+  condition(index: String): Condition
+  conditions(name: String, order_direction: OrderByDirection): [Condition!]
+  damageType(index: String): DamageType
+  damageTypes(name: String, order_direction: OrderByDirection): [DamageType!]
+  equipment(index: String): IEquipment
+  equipmentCategories(name: String, order_direction: OrderByDirection): [EquipmentCategory!]
+  equipmentCategory(index: String): EquipmentCategory
+  equipments(equipment_category: StringFilter, limit: Int! = 100, name: String, order: EquipmentOrder, skip: Int): [IEquipment!]
+  feat(index: String): Feat
+  feats(name: String, order_direction: OrderByDirection): [Feat!]
+  feature(index: String): Feature
+  features(class: StringFilter, level: IntFilter, limit: Int! = 100, name: String, order: FeatureOrder, skip: Int, subclass: StringFilter): [Feature!]
+  language(index: String): Language
+  languages(name: String, order: LanguageOrder, script: LanguageScriptFilter, type: LanguageType): [Language!]
+  level(index: String): Level
+  levels(ability_score_bonuses: IntFilter, class: StringFilter, level: IntFilter, limit: Int! = 100, order: LevelOrder, prof_bonus: IntFilter, skip: Int, subclass: StringFilter): [Level!]
+  magicItem(index: String): MagicItem
+  magicItems(equipment_category: StringFilter, limit: Int! = 100, name: String, order: MagicItemOrder, skip: Int): [MagicItem!]
+  magicSchool(index: String): MagicSchool
+  magicSchools(name: String, order_direction: OrderByDirection): [MagicSchool!]
+  monster(index: String): Monster
+  monsters(armor_class: IntFilter, challenge_rating: FloatFilter, charisma: IntFilter, constitution: IntFilter, damage_immunity: StringFilter, damage_resistance: StringFilter, damage_vulnerability: StringFilter, dexterity: IntFilter, intelligence: IntFilter, limit: Int! = 100, name: String, order: MonsterOrder, size: SizeFilter, skip: Int, strength: IntFilter, subtype: MonsterSubtypeFilter, type: MonsterTypeFilter, wisdom: IntFilter, xp: IntFilter): [Monster!]
+  proficiencies(class: StringFilter, limit: Int! = 100, name: String, order: ProficiencyOrder, race: StringFilter, skip: Int, type: ProficiencyTypeFilter): [Proficiency!]
+  proficiency(index: String): Proficiency
+  race(index: String): Race
+  races(ability_bonus: StringFilter, language: StringFilter, name: String, order: RaceOrder, size: SizeFilter, speed: IntFilter): [Race!]!
+  rule(index: String): Rule
+  ruleSection(index: String): RuleSection
+  ruleSections(name: String, order_direction: OrderByDirection): [RuleSection!]
+  rules(name: String, order_direction: OrderByDirection): [Rule]
+  skill(index: String): Skill
+  skills(ability_score: StringFilter, name: String, order: SkillOrder): [Skill!]
+  spell(index: String): Spell
+  spells(area_of_effect: AreaOfEffectFilter, attack_type: SpellAttackTypeFilter, casting_time: StringFilter, class: StringFilter, concentration: Boolean, damage_type: StringFilter, dc_type: StringFilter, level: IntFilter, limit: Int! = 100, name: String, order: SpellOrder, range: StringFilter, ritual: Boolean, school: StringFilter, skip: Int, subclass: StringFilter): [Spell!]
+  subclass(index: String): Subclass
+  subclasses(name: String, order_direction: OrderByDirection): [Subclass!]!
+  subrace(index: String): Subrace
+  subraces(name: String, order_direction: OrderByDirection): [Subrace!]!
+  trait(index: String): Trait
+  traits(name: String, order_direction: OrderByDirection): [Trait!]
+  weaponProperties(name: String, order_direction: OrderByDirection): [WeaponProperty]
+  weaponProperty(index: String): WeaponProperty
+}
+
+type Race implements ProficiencyRace {
+  ability_bonus_options: AbilityBonusChoice
+  ability_bonuses: [AbilityBonus!]!
+  age: String!
+  alignment: String!
+  index: String!
+  language_desc: String!
+  language_options: LanguageChoice
+  languages(name: String): [Language!]!
+  name: String!
+  size: Size!
+  size_description: String!
+  speed: Int!
+  starting_proficiencies(name: String): [Proficiency!]!
+  starting_proficiency_options: ProficiencyChoice
+  subraces(name: String): [Subrace!]!
+  traits(name: String): [Trait!]!
+}
+
+input RaceOrder {
+  by: RaceOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: RaceOrder
+}
+
+enum RaceOrderBy {
+  NAME
+  SIZE
+  SPEED
+}
+
+type Range {
+  long: Int
+  normal: Int!
+}
+
+type RangerSpecific {
+  favored_enemies: Int!
+  favored_terrain: Int!
+}
+
+type Reaction {
+  dc: ActionDc
+  desc: String!
+  name: String!
+}
+
+enum RestType {
+  LONG
+  SHORT
+}
+
+type RogueSpecific {
+  sneak_attack: Dice!
+}
+
+type Rule {
+  desc: String!
+  index: String!
+  name: String!
+  subsections(name: String): [RuleSection!]!
+}
+
+type RuleSection {
+  desc: String!
+  index: String!
+  name: String!
+}
+
+type Senses {
+  blindsight: String
+  darkvision: String
+  passive_perception: Int!
+  tremorsense: String
+  truesight: String
+}
+
+enum Size {
+  GARGANTUAN
+  HUGE
+  LARGE
+  MEDIUM
+  SMALL
+  TINY
+}
+
+"""
+Size ("TINY", "SMALL", "MEDIUM", "LARGE", "HUGE", "GARGANTUAN") or list of sizes
+"""
+scalar SizeFilter
+
+type Skill {
+  ability_score: AbilityScore!
+  desc: [String!]!
+  index: String!
+  name: String!
+}
+
+input SkillOrder {
+  by: SkillOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: SkillOrder
+}
+
+enum SkillOrderBy {
+  ABILITY_SCORE
+  NAME
+}
+
+type SorcererSpecific {
+  creating_spell_slots: [SpellSlotCreation!]!
+  metamagic_known: Int!
+  sorcery_points: Int!
+}
+
+type SpecialAbility {
+  damage: [Damage!]
+  dc: ActionDc
+  desc: String!
+  name: String!
+  spellcasting: MonsterSpellcasting
+  usage: Usage
+}
+
+type Speed {
+  quantity: Float!
+  unit: String!
+}
+
+type Spell {
+  area_of_effect: AreaOfEffect
+  attack_type: SpellAttackType
+  casting_time: String!
+  classes(name: String): [Class!]!
+  components: [SpellComponent]
+  concentration: Boolean!
+  damage: SpellDamage
+  dc: SpellDc
+  desc: [String!]!
+  duration: String!
+  heal_at_slot_level: [HealingAtLevel!]
+  higher_level: [String!]
+  index: String!
+  level: Int!
+  material: String
+  name: String!
+  range: String!
+  ritual: Boolean!
+  school: MagicSchool!
+  subclasses(name: String): [Subclass!]!
+}
+
+enum SpellAttackType {
+  MELEE
+  RANGED
+}
+
+"""SpellAttackType ("MELEE", "RANGED") or list of SpellAttackTypes"""
+scalar SpellAttackTypeFilter
+
+type SpellChoice {
+  choose: Int!
+  from: SpellOptionSet!
+  type: String!
+}
+
+enum SpellComponent {
+  M
+  S
+  V
+}
+
+type SpellDamage {
+  damage_at_character_level: [DamageAtLevel!]
+  damage_at_slot_level: [DamageAtLevel!]
+  damage_type: DamageType
+}
+
+type SpellDc {
+  desc: String
+  success: DcSuccess!
+  type: AbilityScore!
+}
+
+type SpellOption {
+  item: Spell!
+  option_type: String!
+}
+
+type SpellOptionSet {
+  option_set_type: String!
+  options: [SpellOption!]!
+}
+
+input SpellOrder {
+  by: SpellOrderBy!
+  direction: OrderByDirection! = ASCENDING
+  then_by: SpellOrder
+}
+
+enum SpellOrderBy {
+  AREA_OF_EFFECT_SIZE
+  CONCENTRATION
+  LEVEL
+  NAME
+  RITUAL
+  SCHOOL
+}
+
+union SpellPrerequisite = Feature | Level
+
+type SpellSlotCreation {
+  sorcery_point_cost: Int!
+  spell_slot_level: Int!
+}
+
+type SpellWithPrerequisite {
+  prerequisites: [SpellPrerequisite]!
+  spell: Spell!
+}
+
+type SpellcastingInfo {
+  desc: [String!]!
+  name: String!
+}
+
+type StartingEquipmentChoice {
+  choose: Int!
+  desc: String!
+  from: StartingEquipmentOptionSet!
+  type: String!
+}
+
+union StartingEquipmentOptionSet = EquipmentCategoryOptionSet | EquipmentOptionSet
+
+type StringChoice {
+  choose: Int!
+  from: StringOptionSet!
+  type: String!
+}
+
+"""String or list of strings"""
+scalar StringFilter
+
+type StringOption {
+  option_type: String!
+  string: String!
+}
+
+type StringOptionSet {
+  option_set_type: String!
+  options: [StringOption!]!
+}
+
+type Subclass {
+  class: Class!
+  desc: [String!]!
+  index: String!
+  name: String!
+  spells(area_of_effect: AreaOfEffectFilter, attack_type: SpellAttackTypeFilter, casting_time: StringFilter, class: StringFilter, concentration: Boolean, damage_type: StringFilter, dc_type: StringFilter, level: IntFilter, limit: Int! = 100, name: String, order: SpellOrder, range: StringFilter, ritual: Boolean, school: StringFilter, skip: Int): [SpellWithPrerequisite!]
+  subclass_flavor: String!
+  subclass_levels: [Level]!
+}
+
+union SubclassSpecific = DevotionSpecific | LoreSpecific
+
+type Subrace implements ProficiencyRace {
+  ability_bonuses: [AbilityBonus!]!
+  desc: String!
+  index: String!
+  language_options: LanguageChoice
+  name: String!
+  race: Race!
+  racial_traits(name: String): [Trait!]!
+  starting_proficiencies(name: String): [Proficiency!]!
+}
+
+type Tool implements IEquipment & IEquipmentBase {
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  tool_category: EquipmentCategory!
+  weight: Float
+}
+
+type Trait {
+  desc: [String!]!
+  index: String!
+  language_options: LanguageChoice
+  name: String!
+  parent: Trait
+  proficiencies(name: String): [Proficiency!]!
+  proficiency_choices: ProficiencyChoice
+  races(name: String): [Race]!
+  subraces(name: String): [Subrace!]!
+  trait_specific: TraitSpecific
+}
+
+type TraitChoice {
+  choose: Int!
+  from: TraitOptionSet!
+  type: String!
+}
+
+type TraitOption {
+  item: Trait!
+  option_type: String!
+}
+
+type TraitOptionSet {
+  option_set_type: String!
+  options: [TraitOption!]!
+}
+
+type TraitSpecific {
+  breath_weapon: BreathWeaponTrait
+  damage_type: DamageType
+  spell_options: SpellChoice
+  subtrait_options: TraitChoice
+}
+
+type Usage {
+  dice: String
+  min_value: Int
+  rest_types: [RestType!]
+  times: Int
+  type: UsageType!
+}
+
+enum UsageType {
+  AT_WILL
+  PER_DAY
+  PER_REST
+  RECHARGE_AFTER_REST
+  RECHARGE_ON_ROLL
+}
+
+type Vehicle implements IEquipment & IEquipmentBase {
+  capacity: String
+  cost: Cost!
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  speed: Speed
+  vehicle_category: EquipmentCategory!
+  weight: Float
+}
+
+type WarlockSpecific {
+  invocations_known: Int!
+  mystic_arcanum_level_6: Int!
+  mystic_arcanum_level_7: Int!
+  mystic_arcanum_level_8: Int!
+  mystic_arcanum_level_9: Int!
+}
+
+type Weapon implements IEquipment & IEquipmentBase {
+  category_range: EquipmentCategory!
+  cost: Cost!
+  damage: Damage
+  desc: [String!]
+  equipment_category: EquipmentCategory!
+  index: String!
+  name: String!
+  properties(name: String): [WeaponProperty!]!
+  range: Range!
+  special: [String!]
+  throw_range: Range
+  two_handed_damage: Damage
+  weapon_category: EquipmentCategory!
+  weapon_range: WeaponRange!
+  weight: Float
+}
+
+type WeaponProperty {
+  desc: [String!]!
+  index: String!
+  name: String!
+}
+
+enum WeaponRange {
+  MELEE
+  RANGED
+}
+
+type WizardSpecific {
+  arcane_recovery_levels: Int!
+}
