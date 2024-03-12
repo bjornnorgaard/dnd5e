@@ -1,32 +1,36 @@
 <script lang="ts">
+    import { writable } from "svelte/store";
+    import type { Monster } from "$lib/monster";
+    import { onMount } from "svelte";
 
-    import { graphql } from "$houdini";
+    const filter = writable<string>("");
+    const monsters = writable<Monster[]>([]);
+    const results = writable<Monster[]>([]);
 
-    let filter: number | null = null;
+    onMount(async () => {
+        const response = await fetch("/api/monsters", { method: "GET" });
+        $monsters = await response.json();
+    });
 
-    const searchStore = graphql(`
-        query Search($armorClass: IntFilter){
-            monsters(limit: 5, armor_class: $armorClass) {
-                name, challenge_rating, armor_class {
-                    desc, armor {
-                        armor_class {
-                            base
-                        }
-                    }
-                }
-            }
+    async function search() {
+        if ($filter === "") {
+            $results = [];
+            return;
         }
-    `);
 
-    function doSearch() {
-        searchStore.fetch({variables: {armorClass: filter}})
+        $results = $monsters.filter((monster) => {
+            return monster.name.toLowerCase().includes($filter.toLowerCase());
+        });
     }
 
 </script>
 
-<form on:submit|preventDefault={() => doSearch()}>
-    <label for="name">Name</label>
-    <input name="name" type="number" autocomplete="off">
-</form>
+<section>
+    <form on:input={async () => search()}>
+        <input type="text" bind:value={$filter}>
+    </form>
 
-<pre>{JSON.stringify($searchStore, null, 2)}</pre>
+    {#each $results as r}
+        <p>{r.name}</p>
+    {/each}
+</section>
