@@ -2,7 +2,6 @@
     import { writable } from "svelte/store";
     import type { Monster } from "$lib/types/monster";
     import { onMount } from "svelte";
-    import { monsters } from "$lib/stores/monsters";
 
     const filter = writable<string>("gob");
     const results = writable<Monster[]>([]);
@@ -16,10 +15,8 @@
             $results = [];
             return;
         }
-        // only take first 100 results after filtering
-        $results = $monsters.filter((monster) => {
-            return monster.name.toLowerCase().includes($filter.toLowerCase());
-        });
+        const data = await fetch(`/api/monsters/${$filter}`);
+        $results = await data.json();
     }
 </script>
 
@@ -27,23 +24,19 @@
     <section class="flex flex-col gap-4">
         <hgroup>
             <h2 class="h2">Monsters {$results.length ? `(${$results.length})` : ""}</h2>
-            <p class="italic">Search for creatures and view stats.</p>
+            <p class="italic">Search for creatures and view stats</p>
         </hgroup>
 
         <form on:input={async () => search()}>
             <div class="grid">
                 <label class="label" for="filter">
                     <span>Filter</span>
-                    <input class="input" type="text" id="filter" autocomplete="off" bind:value={$filter} disabled={!$monsters.length}>
+                    <input class="input" type="text" id="filter" autocomplete="off" bind:value={$filter} placeholder="Goblin">
                 </label>
             </div>
         </form>
 
-        {#if !$results.length && !$filter}
-            <p>Search for something...</p>
-        {:else if !$results.length && $filter}
-            <p>No results for this search</p>
-        {:else}
+        {#if $results.length}
             <div class="table-container">
                 <table class="table table-hover">
                     <thead>

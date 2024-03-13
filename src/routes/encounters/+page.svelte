@@ -3,11 +3,12 @@
     import { newUUID } from "$lib/utils/uuid";
     import { goto } from "$app/navigation";
     import type { Encounter } from "$lib/types/encounter";
+    import type { Player } from "$lib/types/player";
 
     async function newEncounter() {
         let e: Encounter = {
             id: newUUID(),
-            name: `Encounter ${new Date().toISOString()}`,
+            name: `Encounter ${Date.now().toString()}`,
             monsters: [],
             partyIds: [],
             playerIds: [],
@@ -16,6 +17,7 @@
 
         await goto(`/encounters/${e.id}`);
     }
+
 </script>
 
 <div class="flex-col flex gap-4">
