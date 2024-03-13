@@ -3,7 +3,6 @@
     import { autoModeWatcher } from '@skeletonlabs/skeleton';
 
     const routes = [
-        { label: "Home", route: "/" },
         { label: "Monsters", route: "/monsters" },
         { label: "Players", route: "/players" },
         { label: "Parties", route: "/parties" },
@@ -13,21 +12,21 @@
 
 <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
 
-<div class="flex max-w-md flex-col gap-4 p-4">
-    <header>
+<div class="flex mx-auto max-w-lg flex-col gap-4 p-4">
+    <header class="p-4 flex flex-col gap-4">
         <hgroup>
             <h1 class="font-bold tracking-wide h1">D&amp;D by Bear</h1>
             <p class="italic">Collection of somewhat useful tools</p>
         </hgroup>
-    </header>
 
-    <nav>
-        <ul class="flex gap-4">
-            {#each routes as r}
-                <li><a class="anchor" href="{r.route}">{r.label}</a></li>
-            {/each}
-        </ul>
-    </nav>
+        <nav>
+            <ul class="flex gap-4 justify-end">
+                {#each routes as r}
+                    <li><a class="anchor" href="{r.route}">{r.label}</a></li>
+                {/each}
+            </ul>
+        </nav>
+    </header>
 
     <main>
         <slot/>

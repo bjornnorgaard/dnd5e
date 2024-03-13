@@ -16,54 +16,56 @@
             $results = [];
             return;
         }
-
+        // only take first 100 results after filtering
         $results = $monsters.filter((monster) => {
             return monster.name.toLowerCase().includes($filter.toLowerCase());
         });
     }
 </script>
 
-<section>
-    <hgroup>
-        <h3>Monster Search</h3>
-        <p>Search for creatures and view stats.</p>
-    </hgroup>
+<div class="flex flex-col gap-4">
+    <section class="flex flex-col gap-4">
+        <hgroup>
+            <h2 class="h2">Monsters {$results.length ? `(${$results.length})` : ""}</h2>
+            <p class="italic">Search for creatures and view stats.</p>
+        </hgroup>
 
-    <form on:input={async () => search()}>
-        <div class="grid">
-            <label for="filter">Filter
-                <input type="text" id="filter" autocomplete="off" bind:value={$filter} disabled={!$monsters.length}>
-            </label>
-        </div>
-    </form>
-</section>
+        <form on:input={async () => search()}>
+            <div class="grid">
+                <label class="label" for="filter">
+                    <span>Filter</span>
+                    <input class="input" type="text" id="filter" autocomplete="off" bind:value={$filter} disabled={!$monsters.length}>
+                </label>
+            </div>
+        </form>
 
-<section>
-    <hgroup>
-        <h3>Results {$results.length ? `(${$results.length})` : ""}</h3>
-        <p>View creatures and details</p>
-    </hgroup>
-
-    {#if !$results.length && !$filter}
-        <p>Search for something...</p>
-    {:else if !$results.length && $filter}
-        <p>No results for this search</p>
-    {/if}
-
-    <table>
-        <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        {#each $results as r}
-            <tr>
-                <td>
-                    {r.name}
-                </td>
-            </tr>
-        {/each}
-        </tbody>
-    </table>
-</section>
+        {#if !$results.length && !$filter}
+            <p>Search for something...</p>
+        {:else if !$results.length && $filter}
+            <p>No results for this search</p>
+        {:else}
+            <div class="table-container">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>CR</th>
+                        <th>AC</th>
+                        <th>Type</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {#each $results as r (r.slug)}
+                        <tr>
+                            <td>{r.name}</td>
+                            <td>{r.cr} / {r.challenge_rating}</td>
+                            <td>{r.armor_class}</td>
+                            <td>{r.type}</td>
+                        </tr>
+                    {/each}
+                    </tbody>
+                </table>
+            </div>
+        {/if}
+    </section>
+</div>

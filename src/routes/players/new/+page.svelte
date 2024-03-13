@@ -32,19 +32,26 @@
     }
 </script>
 
-<form on:submit|preventDefault={async () => await submit()}>
-    <label for="name">Name
-        <input type="text" id="name" autocomplete="off" bind:value={$input.name}>
+<form on:submit|preventDefault={async () => await submit()} class="flex flex-col gap-4">
+    <label class="label" for="name">
+        <span>Name</span>
+        <input class="input" type="text" id="name" autocomplete="off" bind:value={$input.name} placeholder="John Doe">
     </label>
-    <label for="maxHp">Max HP
-        <input type="number" id="maxHp" autocomplete="off" bind:value={$input.maxHp}>
+    <label class="label" for="maxHp">
+        <span>Max HP</span>
+        <input class="input" type="number" id="maxHp" autocomplete="off" bind:value={$input.maxHp}>
     </label>
-    <label for="initiative">Initiative
-        <input type="number" id="initiative" autocomplete="off" bind:value={$input.initiative}>
+    <label class="label" for="armorClass">
+        <span>Armor Class</span>
+        <input class="input" type="number" id="armorClass" autocomplete="off" bind:value={$input.armorClass}>
     </label>
-    <label for="armorClass">Armor Class
-        <input type="number" id="armorClass" autocomplete="off" bind:value={$input.armorClass}>
+    <label class="label" for="initiative">
+        <span>Initiative modifier</span>
+        <input class="input" type="number" id="initiative" autocomplete="off" bind:value={$input.initiative}>
     </label>
 
-    <button type="submit">Submit</button>
+    <div class="flex gap-4">
+        <button class="btn variant-filled-primary" type="submit">Submit</button>
+        <a class="btn variant-outline" href="/players">Cancel</a>
+    </div>
 </form>
