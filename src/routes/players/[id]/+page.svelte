@@ -16,7 +16,7 @@
 <form on:submit|preventDefault={async () => await save()} class="flex flex-col gap-4">
     <label class="label" for="name">
         <span>Name</span>
-        <input class="input" type="text" id="name" autocomplete="off" bind:value={$input.name} placeholder="John Doe">
+        <input class="input" type="text" id="name"  autocomplete="off" bind:value={$input.name} placeholder="John Doe">
     </label>
     <label class="label" for="currentHp">
         <span>Current HP</span>

@@ -21,6 +21,7 @@
     function addPlayer(p: Player) {
         $party.playerIds = [ ...$party.playerIds, p.id ];
     }
+
 </script>
 
 <form on:submit={async () => await save()}>
@@ -29,6 +30,16 @@
         <input class="input" type="text" id="name" autocomplete="off" bind:value={$party.name} placeholder="The Protagonists">
     </label>
 </form>
+
+{#if $players.filter(p => !$party.playerIds.includes(p.id)).length}
+    {@const availablePlayers = $players.filter(p => !$party.playerIds.includes(p.id))}
+    <b class="text-center">Players not in this party (yet)</b>
+    <div class="flex justify-center gap-4">
+        {#each availablePlayers as p}
+            <button class="badge variant-filled-primary" on:click={() => addPlayer(p)}>{p.name}</button>
+        {/each}
+    </div>
+{/if}
 
 <div class="table-container">
     <table class="table table-hover">
@@ -58,11 +69,4 @@
 <div class="flex gap-4">
     <button class="btn variant-filled-primary" on:click={async () => await save()}>Save</button>
     <button class="btn variant-outline" on:click={async () => await goto('/parties')}>Cancel</button>
-</div>
-
-<h3 class="h3">Add other players</h3>
-<div class="flex gap-4">
-    {#each $players as p}
-        <button class="badge variant-filled-primary" on:click={() => addPlayer(p)}>{p.name}</button>
-    {/each}
 </div>
