@@ -39,31 +39,34 @@
     }
 </script>
 
-<form on:submit|preventDefault={() => submit()}>
-    <label for="name">Name
-        <input type="text" autocomplete="off" id="name" bind:value={$input.name}/>
+<form on:submit|preventDefault={() => submit()} class="flex flex-col gap-4">
+    <label for="name" class="label">
+        <span>Name</span>
+        <input class="input" placeholder="The Battle of Tabletops" type="text" autocomplete="off" id="name" bind:value={$input.name}/>
     </label>
 
-    <fieldset>
-        <legend>Parites</legend>
+    <div class="space-y-1">
+        <h3 class="h3">Parties</h3>
         {#each $parties as party}
-            <label for={party.name}>
-                <input type="checkbox" name={party.name} id={party.name} value={party.name}>
-                {party.name}
+            <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox"/>
+                <p>{party.name}</p>
             </label>
         {/each}
-    </fieldset>
+    </div>
 
-    <fieldset>
-        <legend>Players</legend>
+    <div class="space-y-1">
+        <h3 class="h3">Players</h3>
         {#each $players as player}
-            <label for={player.name}>
-                <input type="checkbox" name={player.name} id={player.name} value={player.name}>
-                {player.name}
+            <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox"/>
+                <span>{player.name}</span>
             </label>
         {/each}
-    </fieldset>
+    </div>
 
-    <button type="submit">Create</button>
-    <button type="reset" on:click={() => input.set(getDefaultEncounter())}>Reset</button>
+    <div class="flex gap-4">
+        <button class="btn variant-filled-primary" type="submit">Submit</button>
+        <a class="btn variant-outline" href="/encounters">Cancel</a>
+    </div>
 </form>

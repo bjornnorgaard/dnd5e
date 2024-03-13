@@ -1,8 +1,5 @@
-<nav>
-    <ul>
-        <li><a href="/encounters">List</a></li>
-        <li><a href="/encounters/new">New</a></li>
-    </ul>
-</nav>
+<div class="flex flex-col gap-4">
+    <h2 class="h2">Encounters</h2>
 
-<slot/>
+    <slot/>
+</div>

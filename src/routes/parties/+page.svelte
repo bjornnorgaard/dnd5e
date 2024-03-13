@@ -26,8 +26,8 @@
             </tbody>
         </table>
     </div>
+
     <div class="flex">
         <a class="btn variant-filled-primary" href="/parties/new">Create New Party</a>
     </div>
-
 </div>
