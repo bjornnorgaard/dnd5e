@@ -12,15 +12,15 @@
 
 <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
 
-<div class="flex mx-auto max-w-lg flex-col gap-4 p-4">
-    <header class="p-4 flex flex-col gap-4">
+<div class="mx-auto flex flex-col gap-4 p-4">
+    <header class="flex flex-col gap-4 p-4">
         <hgroup>
             <h1 class="font-bold tracking-wide h1">D&amp;D by Bear</h1>
             <p class="italic">Collection of somewhat useful tools</p>
         </hgroup>
 
         <nav>
-            <ul class="flex gap-4 justify-end">
+            <ul class="flex justify-end gap-4">
                 {#each routes as r}
                     <li><a class="anchor" href="{r.route}">{r.label}</a></li>
                 {/each}

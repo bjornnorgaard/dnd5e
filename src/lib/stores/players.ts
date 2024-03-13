@@ -21,6 +21,9 @@ function createPlayersStore() {
         remove(p: Player) {
             update((players) => players.filter(player => player != p));
         },
+        update(p: Player) {
+            update((players) => players.map(player => player == p ? p : player));
+        }
     };
 }
 

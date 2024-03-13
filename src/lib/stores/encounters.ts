@@ -21,6 +21,9 @@ function createEncountersStore() {
         remove(e: Encounter) {
             update((encounters) => encounters.filter(encounter => encounter != e));
         },
+        update(e: Encounter) {
+            update((encounters) => encounters.map(encounter => encounter == e ? e : encounter));
+        },
     };
 }
 

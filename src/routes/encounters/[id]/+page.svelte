@@ -1,35 +1,54 @@
 <script lang="ts">
     import { encounters } from "$lib/stores/encounters";
+    import type { Encounter } from "$lib/types/encounter";
+    import { goto } from "$app/navigation";
+    import { writable } from "svelte/store";
+    import { parties } from "$lib/stores/parties";
+    import { players } from "$lib/stores/players";
+    import { page } from "$app/stores";
 
-    export let data;
+    const encounter = writable<Encounter>($encounters.filter(e => e.id === $page.params.id)[0]);
+
+    function deleteEncounter(e: Encounter) {
+        encounters.remove(e);
+        goto("/encounters");
+    }
+
+    function save() {
+        encounters.update($encounter);
+        goto("/encounters");
+    }
 </script>
 
-{#if data.id}
-    {@const encounter = $encounters.find(p => p.id === data.id)}
+<form on:submit|preventDefault={() => save()} class="flex flex-col gap-4">
+    <label for="name" class="label">
+        <span>Name</span>
+        <input class="input" placeholder="The Battle of Tabletops" type="text" autocomplete="off" id="name" bind:value={$encounter.name}/>
+    </label>
 
-    <h3 class="h3">{encounter?.name}</h3>
-    <div class="table-container">
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Monsters</th>
-                <th>Party</th>
-                <th>Players</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>{encounter?.name}</td>
-                <td>{encounter?.monsters.length ?? 0}</td>
-                <td>{encounter?.partyIds.length ?? 0}</td>
-                <td>{encounter?.playerIds.length ?? 0}</td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="space-y-1">
+        <h3 class="h3">Parties</h3>
+        {#each $parties as party}
+            <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox"/>
+                <p>{party.name}</p>
+            </label>
+        {/each}
+    </div>
+
+    <div class="space-y-1">
+        <h3 class="h3">Players</h3>
+        {#each $players as player}
+            <label class="flex items-center space-x-2">
+                <input class="checkbox" type="checkbox"/>
+                <span>{player.name}</span>
+            </label>
+        {/each}
     </div>
 
     <div class="flex gap-4">
-        <a class="btn variant-outline" href="/encounters">Back</a>
+        <button class="btn variant-filled-primary" type="submit">Submit</button>
+        <button class="btn variant-filled-error" type="button" on:click={()=> deleteEncounter($encounter)}>Delete</button>
+        <a class="btn variant-outline" href="/encounters">Cancel</a>
     </div>
-{/if}
+</form>

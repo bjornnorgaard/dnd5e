@@ -21,23 +21,8 @@ function createPartiesStore() {
         remove(p: Party) {
             update((parties) => parties.filter(party => party != p));
         },
-        addPlayer(partyId: string, playerId: string) {
-            update((parties) => {
-                const party = parties.find(p => p.id === partyId);
-                if (party && !party.playerIds.includes(playerId)) {
-                    party.playerIds.push(playerId);
-                }
-                return parties;
-            });
-        },
-        removePlayer(partyId: string, playerId: string) {
-            update((parties) => {
-                const party = parties.find(p => p.id === partyId);
-                if (party) {
-                    party.playerIds = party.playerIds.filter(id => id !== playerId);
-                }
-                return parties;
-            });
+        update(p: Party) {
+            update((parties) => parties.map(party => party == p ? p : party));
         },
     };
 }

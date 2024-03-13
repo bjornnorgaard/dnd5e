@@ -2,40 +2,25 @@
     import type { Player } from "$lib/types/player";
     import { writable } from "svelte/store";
     import { players } from "$lib/stores/players";
-    import { newUUID } from "$lib/utils/uuid.js";
+    import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
 
-    interface NewPlayerInput {
-        name: string;
-        maxHp: number;
-        initiative: number;
-        armorClass: number;
-    }
+    const input = writable<Player>($players.filter(p => p.id === $page.params.id)[0]);
 
-    const input = writable<NewPlayerInput>(getDefaultInputValue());
-
-    async function submit() {
-        const newPlayer: Player = {
-            id: newUUID(),
-            name: $input.name,
-            maxHp: $input.maxHp,
-            currentHp: $input.maxHp,
-            initiative: $input.initiative,
-            armorClass: $input.armorClass,
-        };
-
-        players.add(newPlayer);
-        input.set(getDefaultInputValue());
-    }
-
-    function getDefaultInputValue(): NewPlayerInput {
-        return { name: "", maxHp: 0, initiative: 0, armorClass: 0 };
+    async function save() {
+        players.update($input);
+        await goto("/players");
     }
 </script>
 
-<form on:submit|preventDefault={async () => await submit()} class="flex flex-col gap-4">
+<form on:submit|preventDefault={async () => await save()} class="flex flex-col gap-4">
     <label class="label" for="name">
         <span>Name</span>
         <input class="input" type="text" id="name" autocomplete="off" bind:value={$input.name} placeholder="John Doe">
+    </label>
+    <label class="label" for="currentHp">
+        <span>Current HP</span>
+        <input class="input" type="number" id="currentHp" autocomplete="off" bind:value={$input.currentHp}>
     </label>
     <label class="label" for="maxHp">
         <span>Max HP</span>

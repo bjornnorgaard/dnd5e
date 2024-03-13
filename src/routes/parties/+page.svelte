@@ -1,5 +1,19 @@
 <script lang="ts">
     import { parties } from "$lib/stores/parties";
+    import { newUUID } from "$lib/utils/uuid.js";
+    import { goto } from "$app/navigation";
+    import type { Party } from "$lib/types/party";
+
+    async function createNewParty() {
+        const p: Party = {
+            id: newUUID(),
+            name: "New Party",
+            playerIds: [],
+        };
+
+        parties.add(p)
+        await goto(`/parties/${p.id}`);
+    }
 </script>
 
 <div class="flex flex-col gap-4">
@@ -28,6 +42,6 @@
     </div>
 
     <div class="flex">
-        <a class="btn variant-filled-primary" href="/parties/new">Create New Party</a>
+        <button class="btn variant-filled-primary" on:click={async ()=> await createNewParty()}>Create New Party</button>
     </div>
 </div>
