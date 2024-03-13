@@ -34,10 +34,14 @@
 
 </script>
 
-<form on:submit|preventDefault={async () => await submit()}>
-    <label for="name">Name
-        <input type="text" id="name" bind:value={$input.name}>
+<form on:submit|preventDefault={async () => await submit()} class="flex flex-col gap-4">
+    <label for="name" class="label">
+        <span>Name</span>
+        <input class="input" type="text" id="name" bind:value={$input.name}>
     </label>
 
-    <button type="submit">Submit</button>
+    <div class="flex gap-4">
+        <button class="btn variant-filled-primary" type="submit">Submit</button>
+        <a class="btn variant-outline" href="/parties">Cancel</a>
+    </div>
 </form>
