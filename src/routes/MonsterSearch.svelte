@@ -22,10 +22,10 @@
     })
 </script>
 
-<div class="flex flex-col gap-4 h-full">
+<div class="flex h-full flex-col gap-4">
     <input class="input" placeholder="Search for monsters" type="search" bind:value={filter} on:input={() => searchMonsters()}>
 
-    <div class="table-container h-full">
+    <div class="h-full table-container">
         <table class="table table-compact table-hover">
             <thead>
             <tr>
