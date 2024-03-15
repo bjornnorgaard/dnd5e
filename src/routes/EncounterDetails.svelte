@@ -2,12 +2,34 @@
     import type { Encounter } from "$lib/types/encounter";
     import { players } from "$lib/stores/players";
     import { parties } from "$lib/stores/parties";
+    import { encounters } from "$lib/stores/encounters";
+    import type { Player } from "$lib/types/player";
+    import type { Party } from "$lib/types/party";
+    import type { Monster } from "$lib/types/monster";
 
     export let encounter: Encounter;
+
+    function removePlayer(p: Player) {
+        const e = $encounters.filter(e => e.id === encounter.id)[0];
+        e.playerIds = e.playerIds.filter(id => id !== p.id);
+        encounters.updateEncounter(e);
+    }
+
+    function removeParty(p: Party) {
+        const e = $encounters.filter(e => e.id === encounter.id)[0];
+        e.partyIds = e.partyIds.filter(id => id !== p.id);
+        encounters.updateEncounter(e);
+    }
+
+    function removeMonster(m: Monster) {
+        const e = $encounters.filter(e => e.id === encounter.id)[0];
+        e.monsters = e.monsters.filter(monster => monster !== m);
+        encounters.updateEncounter(e);
+    }
 </script>
 
 {#if encounter?.name}
-    <div class="card p-4 flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
         <h2 class="h2">{encounter.name}</h2>
 
         <div class="table-container">
@@ -18,6 +40,7 @@
                     <th>HP</th>
                     <th>AC</th>
                     <th>Initiative</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -27,6 +50,9 @@
                         <td>{p.currentHp}/{p.maxHp}</td>
                         <td>{p.armorClass}</td>
                         <td>{p.initiative}</td>
+                        <td>
+                            <button class="btn btn-sm variant-outline-error" on:click={() => removePlayer(p)}>Remove️</button>
+                        </td>
                     </tr>
                 {/each}
                 {#each $parties.filter(p => encounter.partyIds.includes(p.id)) as party}
@@ -39,8 +65,22 @@
                             <td>{player.currentHp}/{player.maxHp}</td>
                             <td>{player.armorClass}</td>
                             <td>{player.initiative}</td>
+                            <td>
+                                <button class="btn btn-sm variant-outline-error" on:click={() => removeParty(party)}>Remove️</button>
+                            </td>
                         </tr>
                     {/each}
+                {/each}
+                {#each $encounters.filter(e => e.id === encounter.id)[0].monsters as m}
+                    <tr>
+                        <td>{m.name}</td>
+                        <td>{m.hit_points}</td>
+                        <td>{m.armor_class}</td>
+                        <td>{m.wisdom}</td>
+                        <td>
+                            <button class="btn btn-sm variant-outline-error" on:click={() => removeMonster(m)}>Remove️</button>
+                        </td>
+                    </tr>
                 {/each}
                 </tbody>
             </table>

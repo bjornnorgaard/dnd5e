@@ -13,7 +13,7 @@
             partyIds: [],
             playerIds: [],
         };
-        encounters.add(e)
+        encounters.addEncounter(e)
 
         await goto(`/encounters/${e.id}`);
     }
@@ -41,7 +41,7 @@
                     <td>{e.playerIds.length}</td>
                     <td class="flex items-center gap-4">
                         <a class="anchor" href={`/encounters/${e.id}`}>View</a>
-                        <button class="btn btn-sm variant-outline-error" on:click={() => encounters.remove(e)}>Delete</button>
+                        <button class="btn btn-sm variant-outline-error" on:click={() => encounters.removeEncounter(e)}>Delete</button>
                     </td>
                 </tr>
             {/each}

@@ -21,12 +21,12 @@
     }
 
     async function deleteEncounter(e: Encounter) {
-        encounters.remove(e);
+        encounters.removeEncounter(e);
         await goto("/encounters");
     }
 
     async function save() {
-        encounters.update($encounter);
+        encounters.updateEncounter($encounter);
         await goto("/encounters");
     }
 
