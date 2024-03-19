@@ -19,8 +19,6 @@ export interface Encounter {
 }
 
 export class TrackerDatabase extends Dexie {
-    // 'friends' is added by dexie when declaring the stores()
-    // We just tell the typing system this is the case
     players!: Table<Player>;
     encounters!: Table<Encounter>;
 
@@ -34,19 +32,3 @@ export class TrackerDatabase extends Dexie {
 }
 
 export const db = new TrackerDatabase();
-
-export function getPlayers() {
-    return db.players.toArray();
-}
-
-export function getPlayer(id: number) {
-    return db.players.get(id);
-}
-
-export function addPlayer(player: Player) {
-    return db.players.add(player);
-}
-
-export function deletePlayer(id: number) {
-    return db.players.delete(id);
-}

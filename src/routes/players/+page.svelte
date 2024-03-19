@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { addPlayer, getPlayers, type Player } from "$lib/utils/database";
     import { liveQuery } from "dexie";
-    import { deletePlayer } from "$lib/utils/database.js";
     import { goto } from "$app/navigation";
+    import { db, type Player } from "$lib/utils/database";
+    import { flip } from "svelte/animate";
 
     async function create() {
-        const id = await addPlayer({
+        const id = await db.players.add({
             name: "New Player",
             initiative: 0,
             currentHp: 0,
@@ -16,14 +16,14 @@
         await goto(`/players/${id}`);
     }
 
-    const players = liveQuery(() => getPlayers());
+    const players = liveQuery(async () => await db.players.toArray());
 
     async function removePlayer(player: Player) {
         if (!player.id) {
-            console.log("No player id");
+            console.error("No player id");
             return;
         }
-        await deletePlayer(player.id);
+        await db.players.delete(player.id);
     }
 </script>
 
@@ -43,8 +43,8 @@
             {#if !$players}
                 <p>No players found</p>
             {:else}
-                {#each $players as p}
-                    <tr>
+                {#each $players as p (p.id)}
+                    <tr animate:flip>
                         <td>{p.name}</td>
                         <td>{p.initiative}</td>
                         <td>{p.currentHp}/{p.maxHp}</td>

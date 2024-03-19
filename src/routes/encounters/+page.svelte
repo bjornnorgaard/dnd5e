@@ -1,53 +1,62 @@
 <script lang="ts">
-    import { encounterStore } from "$lib/stores/encounterStore";
-    import { newUUID } from "$lib/utils/uuid";
+    import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
-    import type { Player } from "$lib/types/player";
-    import type { Encounter } from "$lib/types/tracker";
+    import { db, type Encounter } from "$lib/utils/database";
+    import { flip } from "svelte/animate";
 
-    async function newEncounter() {
-        let e: Encounter = {
-            id: newUUID(),
-            title: `Encounter ${Date.now().toString()}`,
-            monsters: [],
+    async function create() {
+        const id = await db.encounters.add({
+            title: "New Encounter",
             playerIds: [],
-        };
-        encounterStore.addEncounter(e)
+            monsters: [],
+        });
 
-        await goto(`/encounters/${e.id}`);
+        await goto(`/encounters/${id}`);
     }
 
+    const encounter = liveQuery(async () => await db.encounters.toArray());
+
+    async function removeEncounter(encounter: Encounter) {
+        if (!encounter.id) {
+            console.error("No encounter id");
+            return;
+        }
+        await db.encounters.delete(encounter.id);
+    }
 </script>
 
-<div class="flex-col flex gap-4">
+<div class="flex flex-col gap-4">
     <div class="table-container">
         <table class="table table-hover">
             <thead>
             <tr>
                 <th>Name</th>
-                <th>Monsters</th>
                 <th>Players</th>
-                <th>Parties</th>
+                <th>Monsters</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            {#each $encounterStore as e}
-                <tr>
-                    <td>{e.name}</td>
-                    <td>{e.monsters.length}</td>
-                    <td>{e.playerIds.length}</td>
-                    <td class="flex items-center gap-4">
-                        <a class="anchor" href={`/encounters/${e.id}`}>View</a>
-                        <button class="btn btn-sm variant-outline-error" on:click={() => encounterStore.removeEncounter(e)}>Delete</button>
-                    </td>
-                </tr>
-            {/each}
+            {#if !$encounter}
+                <p>No encounter found</p>
+            {:else}
+                {#each $encounter as p (p.id)}
+                    <tr animate:flip>
+                        <td>{p.title}</td>
+                        <td>{p.playerIds.length}</td>
+                        <td>{p.monsters.length}</td>
+                        <td>
+                            <a href={`/encounters/${p.id}`} class="btn btn-sm variant-soft-secondary">View</a>
+                            <button class="btn btn-sm variant-soft-error" on:click={() => removeEncounter(p)}>Delete</button>
+                        </td>
+                    </tr>
+                {/each}
+            {/if}
             </tbody>
         </table>
     </div>
 
     <div class="flex">
-        <button class="btn variant-filled-primary" on:click={ async () => await newEncounter()}>New Encounter</button>
+        <button on:click={async () => await create()} class="btn variant-filled-primary">Add New Encounter</button>
     </div>
 </div>
