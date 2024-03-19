@@ -1,14 +1,13 @@
 <script lang="ts">
-    import { players } from "$lib/stores/players";
     import { createEventDispatcher } from "svelte";
-    import type { Player } from "$lib/types/player";
+    import type { Player } from "$lib/types/tracker";
+    import { tracker } from "$lib/stores/tracker";
 
     const dispatcher = createEventDispatcher();
 
     function playerClicked(player: Player) {
         dispatcher("select", player);
     }
-
 </script>
 
 <div class="flex flex-col gap-4">
@@ -23,7 +22,7 @@
             </tr>
             </thead>
             <tbody>
-            {#each $players as p}
+            {#each $tracker.players as p}
                 <tr on:click={() => playerClicked(p)}>
                     <td>{p.name}</td>
                     <td>{p.initiative}</td>

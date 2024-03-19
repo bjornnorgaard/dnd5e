@@ -1,4 +1,5 @@
 <script lang="ts">
+
     import type { Monster } from "$lib/types/monster";
 
     export let monster: Monster;

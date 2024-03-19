@@ -1,7 +1,7 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import type { Monster } from "$lib/types/monster";
     import { onMount } from "svelte";
+    import type { Monster } from "$lib/types/tracker";
 
     const filter = writable<string>("gob");
     const results = writable<Monster[]>([]);

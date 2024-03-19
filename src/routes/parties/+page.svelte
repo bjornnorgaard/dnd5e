@@ -2,7 +2,8 @@
     import { parties } from "$lib/stores/parties";
     import { newUUID } from "$lib/utils/uuid.js";
     import { goto } from "$app/navigation";
-    import type { Party } from "$lib/types/party";
+
+    import type { Party } from "$lib/types/tracker";
 
     async function createNewParty() {
         const p: Party = {

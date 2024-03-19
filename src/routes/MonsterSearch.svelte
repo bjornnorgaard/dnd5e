@@ -1,14 +1,16 @@
 <script lang="ts">
     import { writable } from "svelte/store";
-    import type { Monster } from "$lib/types/monster";
     import { createEventDispatcher, onMount } from "svelte";
+    import { ProgressBar } from "@skeletonlabs/skeleton";
+    import { browser } from "$app/environment";
+    import type { Monster } from "$lib/types/monster";
 
     const dispatcher = createEventDispatcher();
     const monsters = writable<Monster[]>([]);
     let filter = "";
 
     async function searchMonsters(): Promise<void> {
-        const res = await fetch(`/api/monsters/${filter}`);
+        const res = await fetch(`/api/monsters?filter=${filter}`);
         const data = await res.json();
         monsters.set(data);
     }
@@ -18,7 +20,9 @@
     }
 
     onMount(async () => {
-        await searchMonsters();
+        if (browser) {
+            await searchMonsters();
+        }
     })
 </script>
 
@@ -34,7 +38,7 @@
                 <th>AC</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="overflow-scroll">
             {#each $monsters as m}
                 <tr on:click={() => monsterClicked(m)} class="cursor-pointer">
                     <td>{m.name}</td>

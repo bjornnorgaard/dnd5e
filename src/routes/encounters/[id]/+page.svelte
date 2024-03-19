@@ -1,16 +1,14 @@
 <script lang="ts">
-    import { encounters } from "$lib/stores/encounters";
-    import type { Encounter } from "$lib/types/encounter";
+    import { encounterStore } from "$lib/stores/encounterStore";
     import { goto } from "$app/navigation";
     import { writable } from "svelte/store";
-    import { parties } from "$lib/stores/parties";
-    import { players } from "$lib/stores/players";
+    import { playerStore } from "$lib/stores/playerStore";
     import { page } from "$app/stores";
-    import type { Party } from "$lib/types/party";
     import type { Player } from "$lib/types/player";
-    import type { Monster } from "$lib/types/monster";
 
-    const encounter = writable<Encounter>($encounters.filter(e => e.id === $page.params.id)[0]);
+    import type { Encounter, Monster } from "$lib/types/tracker";
+
+    const encounter = writable<Encounter>($encounterStore.filter(e => e.id === $page.params.id)[0]);
     const monsterSearchValue = writable<string>("");
     const monsters = writable<Monster[]>([]);
 
@@ -21,12 +19,12 @@
     }
 
     async function deleteEncounter(e: Encounter) {
-        encounters.removeEncounter(e);
+        encounterStore.removeEncounter(e);
         await goto("/encounters");
     }
 
     async function save() {
-        encounters.updateEncounter($encounter);
+        encounterStore.updateEncounter($encounter);
         await goto("/encounters");
     }
 
@@ -36,14 +34,6 @@
 
     function addPlayer(p: Player) {
         $encounter.playerIds = [ ...$encounter.playerIds, p.id ];
-    }
-
-    function removeParty(p: Party) {
-        $encounter.partyIds = $encounter.partyIds.filter(id => id !== p.id);
-    }
-
-    function addParty(p: Party) {
-        $encounter.partyIds = [ ...$encounter.partyIds, p.id ];
     }
 
     function addMonster(m: Monster) {
@@ -58,7 +48,7 @@
 <div class="flex flex-col gap-4">
     <label for="name" class="label">
         <span>Name</span>
-        <input class="input" placeholder="The Battle of Tabletops" type="text" autocomplete="off" id="name" bind:value={$encounter.name}/>
+        <input class="input" placeholder="The Battle of Tabletops" type="text" autocomplete="off" id="name" bind:value={$encounter.title}/>
     </label>
 
     <div class="table-container">
@@ -73,7 +63,7 @@
             </tr>
             </thead>
             <tbody>
-            {#each $players.filter(p => $encounter.playerIds.includes(p.id)) as player}
+            {#each $playerStore.filter(p => $encounter.playerIds.includes(p.id)) as player}
                 <tr>
                     <td class="flex items-center gap-4">
                         <span>{player.name}</span>
@@ -86,22 +76,6 @@
                         <button class="btn btn-sm variant-filled-error" on:click={() => removePlayer(player)}>Remove</button>
                     </td>
                 </tr>
-            {/each}
-            {#each $parties.filter(p => $encounter.partyIds.includes(p.id)) as party}
-                {#each $players.filter(p => party.playerIds.includes(p.id)) as player}
-                    <tr>
-                        <td class="flex items-center gap-4">
-                            <span>{player.name}</span>
-                            <span class="badge variant-outline-primary">{party.name}</span>
-                        </td>
-                        <td>{player.currentHp}/{player.maxHp}</td>
-                        <td>{player.armorClass}</td>
-                        <td>{player.initiative}</td>
-                        <td>
-                            <button class="btn btn-sm variant-filled-error" on:click={() => removeParty(party)}>Remove</button>
-                        </td>
-                    </tr>
-                {/each}
             {/each}
             {#each $encounter.monsters as m}
                 <tr>
@@ -154,22 +128,11 @@
     </div>
 
     <div class="flex flex-col  gap-4">
-        <b class="text-center">Available <span class="badge variant-filled-secondary">Parties</span> and <span class="badge variant-filled-primary">Players</span> for this encounter</b>
+        <b class="text-center">Available <span class="badge variant-filled-primary">Players</span> for this encounter</b>
 
         <div class="flex justify-center gap-4">
-            {#if $parties.filter(p => !$encounter.partyIds.includes(p.id)).length}
-                {@const availableParties = $parties.filter(p => !$encounter.partyIds.includes(p.id))}
-                <ul class="flex gap-4">
-                    {#each availableParties as p}
-                        <li>
-                            <button class="badge variant-filled-secondary" on:click={() => addParty(p)}>{p.name}</button>
-                        </li>
-                    {/each}
-                </ul>
-            {/if}
-
-            {#if $players.filter(p => !$encounter.playerIds.includes(p.id)).length}
-                {@const availablePlayers = $players.filter(p => !$encounter.playerIds.includes(p.id))}
+            {#if $playerStore.filter(p => !$encounter.playerIds.includes(p.id)).length}
+                {@const availablePlayers = $playerStore.filter(p => !$encounter.playerIds.includes(p.id))}
                 <ul class="flex justify-center gap-4">
                     {#each availablePlayers as p}
                         <li>

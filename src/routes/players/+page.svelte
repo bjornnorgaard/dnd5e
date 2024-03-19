@@ -1,21 +1,29 @@
 <script lang="ts">
-    import { players } from "$lib/stores/players";
-    import type { Player } from "$lib/types/player";
-    import { newUUID } from "$lib/utils/uuid";
+    import { addPlayer, getPlayers, type Player } from "$lib/utils/database";
+    import { liveQuery } from "dexie";
+    import { deletePlayer } from "$lib/utils/database.js";
     import { goto } from "$app/navigation";
 
     async function create() {
-        const newPlayer: Player = {
-            id: newUUID(),
-            name: "Unnamed Player",
-            currentHp: 15,
-            maxHp: 15,
-            initiative: 2,
-            armorClass: 16,
-        };
+        const id = await addPlayer({
+            name: "New Player",
+            initiative: 0,
+            currentHp: 0,
+            maxHp: 0,
+            armorClass: 0,
+        });
 
-        players.add(newPlayer)
-        await goto(`/players/${newPlayer.id}`);
+        await goto(`/players/${id}`);
+    }
+
+    const players = liveQuery(() => getPlayers());
+
+    async function removePlayer(player: Player) {
+        if (!player.id) {
+            console.log("No player id");
+            return;
+        }
+        await deletePlayer(player.id);
     }
 </script>
 
@@ -32,18 +40,22 @@
             </tr>
             </thead>
             <tbody>
-            {#each $players as p}
-                <tr>
-                    <td>{p.name}</td>
-                    <td>{p.initiative}</td>
-                    <td>{p.currentHp}/{p.maxHp}</td>
-                    <td>{p.armorClass}</td>
-                    <td>
-                        <a href={`/players/${p.id}`} class="btn btn-sm variant-outline">View</a>
-                        <button class="btn btn-sm variant-outline-error" on:click={() => players.remove(p)}>Delete</button>
-                    </td>
-                </tr>
-            {/each}
+            {#if !$players}
+                <p>No players found</p>
+            {:else}
+                {#each $players as p}
+                    <tr>
+                        <td>{p.name}</td>
+                        <td>{p.initiative}</td>
+                        <td>{p.currentHp}/{p.maxHp}</td>
+                        <td>{p.armorClass}</td>
+                        <td>
+                            <a href={`/players/${p.id}`} class="btn btn-sm variant-outline">View</a>
+                            <button class="btn btn-sm variant-outline-error" on:click={() => removePlayer(p)}>Delete</button>
+                        </td>
+                    </tr>
+                {/each}
+            {/if}
             </tbody>
         </table>
     </div>

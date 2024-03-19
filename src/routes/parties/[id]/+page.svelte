@@ -1,11 +1,11 @@
 <script lang="ts">
     import { parties } from "$lib/stores/parties";
-    import { players } from "$lib/stores/players";
+    import { playerStore } from "$lib/stores/playerStore";
     import { writable } from "svelte/store";
-    import type { Party } from "$lib/types/party";
     import type { Player } from "$lib/types/player";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
+    import type { Party } from "$lib/types/tracker";
 
     const party = writable<Party>($parties.filter(p => p.id === $page.params.id)[0]);
 
@@ -31,8 +31,8 @@
     </label>
 </form>
 
-{#if $players.filter(p => !$party.playerIds.includes(p.id)).length}
-    {@const availablePlayers = $players.filter(p => !$party.playerIds.includes(p.id))}
+{#if $playerStore.filter(p => !$party.playerIds.includes(p.id)).length}
+    {@const availablePlayers = $playerStore.filter(p => !$party.playerIds.includes(p.id))}
     <b class="text-center">Players not in this party (yet)</b>
     <div class="flex justify-center gap-4">
         {#each availablePlayers as p}
@@ -52,7 +52,7 @@
         </tr>
         </thead>
         <tbody>
-        {#each $players.filter(player => $party.playerIds.includes(player.id)) ?? [] as p}
+        {#each $playerStore.filter(player => $party.playerIds.includes(player.id)) ?? [] as p}
             <tr>
                 <td>{p.name}</td>
                 <td>{p.currentHp}/{p.maxHp}</td>

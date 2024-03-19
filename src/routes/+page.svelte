@@ -1,35 +1,21 @@
 <script lang="ts">
     import MonsterSearch from "./MonsterSearch.svelte";
-    import type { Monster } from "$lib/types/monster";
     import MonsterStats from "./MonsterStats.svelte";
-    import type { Encounter } from "$lib/types/encounter";
     import EncounterList from "./EncounterList.svelte";
     import EncounterDetails from "./EncounterDetails.svelte";
-    import { encounters } from "$lib/stores/encounters";
     import PlayerList from "./PlayerList.svelte";
-
-    let openMonster: Monster;
-    let openEncounter: Encounter;
+    import { tracker } from "$lib/stores/tracker";
 
     function monsterSelected(e: any) {
-        openMonster = e.detail;
-
-        // TODO: Update this to use new encounter store.
-        if (openEncounter) {
-            openEncounter.monsters.push(openMonster);
-            encounters.updateEncounter(openEncounter);
-        }
+        tracker.setActiveMonster(e.detail);
     }
 
     function playerSelected(e: any) {
-        if (openEncounter) {
-            openEncounter.playerIds.push(e.detail.id);
-            encounters.updateEncounter(openEncounter);
-        }
+        tracker.setActivePlayerId(e.detail.id);
     }
 
     function encounterSelected(e: any) {
-        openEncounter = e.detail;
+        tracker.setActiveEncounterId(e.detail.id);
     }
 </script>
 
@@ -39,15 +25,17 @@
     </div>
 
     <div class="col-span-2 space-y-4">
-        {#if !openEncounter?.name}
+        {#if !$tracker.activeEncounterId}
             <EncounterList on:select={encounterSelected}/>
         {:else}
-            <EncounterDetails bind:encounter={openEncounter}/>
+            <EncounterDetails bind:encounterId={$tracker.activeEncounterId}/>
             <PlayerList on:select={playerSelected}/>
         {/if}
     </div>
 
     <div class="h-full">
-        <MonsterStats bind:monster={openMonster}/>
+        {#if $tracker.activeMonster}
+            <MonsterStats bind:monster={$tracker.activeMonster}/>
+        {/if}
     </div>
 </div>
