@@ -2,7 +2,6 @@
     import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
     import { db, type Player } from "$lib/utils/database";
-    import { flip } from "svelte/animate";
 
     async function create() {
         const id = await db.players.add({
@@ -44,7 +43,7 @@
                 <p>No players found</p>
             {:else}
                 {#each $players as p (p.id)}
-                    <tr animate:flip>
+                    <tr>
                         <td>{p.name}</td>
                         <td>{p.initiative}</td>
                         <td>{p.currentHp}/{p.maxHp}</td>

@@ -1,7 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
     import { createEventDispatcher, onMount } from "svelte";
-    import { ProgressBar } from "@skeletonlabs/skeleton";
     import { browser } from "$app/environment";
     import type { Monster } from "$lib/types/monster";
 
