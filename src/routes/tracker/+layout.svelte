@@ -1,6 +1,6 @@
 <script lang="ts">
-    import MonsterSearch from "./MonsterSearch.svelte";
-    import MonsterStats from "./MonsterStats.svelte";
+    import MonsterSearch from "$lib/components/MonsterSearch.svelte";
+    import MonsterStats from "$lib/components/MonsterStats.svelte";
     import type { Monster } from "$lib/types/monster";
     import { writable } from "svelte/store";
 
@@ -8,7 +8,7 @@
 
 </script>
 
-<div class="grid w-screen grid-cols-4 grid-rows-1 gap-4 p-4 h-svh">
+<div class="grid w-screen grid-cols-4 grid-rows-1 gap-4 p-4">
     <div class="h-full">
         <MonsterSearch on:select={(e) => $activeMonster = e.detail}/>
     </div>

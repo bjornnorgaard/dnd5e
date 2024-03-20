@@ -1,8 +1,19 @@
 <script lang="ts">
     import "../app.pcss";
-    import { autoModeWatcher } from '@skeletonlabs/skeleton';
+    import { AppShell, autoModeWatcher } from '@skeletonlabs/skeleton';
+    import SideNav from "./SideNav.svelte";
 </script>
 
 <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
 
-<slot/>
+<AppShell>
+    <svelte:fragment slot="sidebarLeft">
+        <SideNav/>
+    </svelte:fragment>
+
+    <main class="h-full">
+        <slot/>
+    </main>
+</AppShell>
+
+
