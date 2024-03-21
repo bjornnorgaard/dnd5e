@@ -4,6 +4,7 @@
     import MonsterSearch from "$lib/components/MonsterSearch.svelte";
     import { slide } from "svelte/transition";
     import { cubicIn, cubicOut } from "svelte/easing";
+    import PageWrapper from "$lib/components/PageWrapper.svelte";
 
     let selectedMonster: Monster | null = null;
 
@@ -16,9 +17,12 @@
     }
 </script>
 
-<div class="flex gap-4 p-4">
+<PageWrapper title="D&D 5th SRD Beastiary">
+
+
+<div class="flex gap-4">
     <div class="grow space-y-4">
-        <h1 class="font-bold h1">D&D 5th SRD Beastiary</h1>
+
         <MonsterSearch on:select={monsterSelected}/>
     </div>
 
@@ -28,3 +32,4 @@
         </div>
     {/if}
 </div>
+</PageWrapper>

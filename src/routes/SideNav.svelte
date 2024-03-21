@@ -13,7 +13,7 @@
         { label: "Home", route: "/", icon: Home },
         { label: "Tracker", route: "/tracker", icon: Timer },
         { label: "Players", route: "/tracker/players", icon: Group },
-        { label: "Beasts", route: "/beastiary", icon: Rabbit },
+        { label: "Beasts", route: "/beasts", icon: Rabbit },
         { label: "Sandbox", route: "/sandbox", icon: TestTube },
     ];
 </script>

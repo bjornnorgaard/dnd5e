@@ -124,7 +124,7 @@
 
 </script>
 
-<div class="h-full p-8 bg-gradient-to-br from-primary-500 to-secondary-500">
+<div class="h-full p-8">
     <div class="mx-auto h-5/6 w-96">
         <MonsterStats bind:monster={monster}/>
     </div>

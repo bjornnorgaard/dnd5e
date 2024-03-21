@@ -6,11 +6,6 @@
     export let data;
     const encounter = liveQuery(async () => await db.encounters.get(data.id));
 
-    function removePlayer(playerId: string) {
-    }
-
-    function removeMonster(index: number) {
-    }
 </script>
 
 {#if $encounter?.title}
@@ -33,17 +28,17 @@
                 </thead>
                 <tbody>
 
-                <!--{#each $monstersInEncounter as m, i}-->
-                <!--    <tr>-->
-                <!--        <td>{m.name}</td>-->
-                <!--        <td>{m.hit_points}</td>-->
-                <!--        <td>{m.armor_class}</td>-->
-                <!--        <td>{m.dexterity}</td>-->
-                <!--        <td>-->
-                <!--            <button class="btn btn-sm variant-outline-error" on:click={() => removeMonster(i)}>Remove️</button>-->
-                <!--        </td>-->
-                <!--    </tr>-->
-                <!--{/each}-->
+                {#each $encounter.monsters as m, i}
+                    <tr>
+                        <td>{m.name}</td>
+                        <td>{m.hit_points}</td>
+                        <td>{m.armor_class}</td>
+                        <td>{m.dexterity}</td>
+                        <td>
+                            <button class="btn btn-sm variant-outline-error" on:click={() => console.log("remove clicked")}>Remove️</button>
+                        </td>
+                    </tr>
+                {/each}
                 </tbody>
             </table>
         </div>

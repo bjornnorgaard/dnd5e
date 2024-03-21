@@ -11,9 +11,7 @@
         <SideNav/>
     </svelte:fragment>
 
-    <main class="h-full">
+    <main class="h-full p-4">
         <slot/>
     </main>
 </AppShell>
-
-
