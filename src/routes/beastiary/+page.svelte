@@ -3,7 +3,7 @@
     import MonsterStats from "$lib/components/MonsterStats.svelte";
     import MonsterSearch from "$lib/components/MonsterSearch.svelte";
     import { slide } from "svelte/transition";
-    import { cubicIn, cubicInOut, cubicOut } from "svelte/easing";
+    import { cubicIn, cubicOut } from "svelte/easing";
 
     let selectedMonster: Monster | null = null;
 
@@ -16,8 +16,8 @@
     }
 </script>
 
-<div class="flex p-4 gap-4">
-    <div class="flex flex-col   grow">
+<div class="flex gap-4 p-4">
+    <div class="grow space-y-4">
         <h1 class="font-bold h1">D&D 5th SRD Beastiary</h1>
         <MonsterSearch on:select={monsterSelected}/>
     </div>

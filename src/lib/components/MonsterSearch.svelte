@@ -22,26 +22,39 @@
     })
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="space-y-4">
     <input class="input" placeholder="Search for monsters" type="search" bind:value={filter} on:input={() => searchMonsters()}>
 
+
     <div class="table-container">
-        <table class="table table-compact table-hover overflow-x-scroll">
+        <table class="table table-compact table-hover">
             <thead>
             <tr>
-                <th>Name</th>
                 <th>CR</th>
+                <th>Name</th>
                 <th>AC</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Alignment</th>
             </tr>
             </thead>
-            <tbody class="overflow-scroll">
+            <tbody>
             {#each $monsters as m}
                 <tr on:click={() => monsterClicked(m)} class="cursor-pointer">
-                    <td>{m.name}</td>
                     <td>{m.challenge_rating}</td>
+                    <td>{m.name}</td>
                     <td>{m.armor_class}</td>
+                    <td>{m.type}</td>
+                    <td>{m.size}</td>
+                    <td>{m.alignment}</td>
                 </tr>
             {/each}
+            </tbody>
+            <tfoot>
+            <tr class="font-bold">
+                <td colspan="5">Total results</td>
+                <td>{($monsters).length}</td>
+            </tfoot>
         </table>
     </div>
 </div>

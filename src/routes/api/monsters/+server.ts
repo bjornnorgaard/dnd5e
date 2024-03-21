@@ -12,7 +12,7 @@ export const GET = ({ url }) => {
     }
 
     const list: Monster[] = data?.results ?? [];
-    const res = list.filter(m => m.name.toLowerCase().includes(filter.toLowerCase())).slice(0, 10);
+    const res = list.filter(m => m.name.toLowerCase().includes(filter.toLowerCase())).slice(0, 20);
 
     return json(res);
 }

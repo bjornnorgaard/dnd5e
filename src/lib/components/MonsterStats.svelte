@@ -18,7 +18,7 @@
     {:else}
         {@const m = monster}
 
-        <h2 class="font-bold h2 text-primary-500">{monster.name}</h2>
+        <h3 class="font-bold h3 text-primary-500">{monster.name}</h3>
 
         <p>
             {#if m.size}{m.size},{/if}
