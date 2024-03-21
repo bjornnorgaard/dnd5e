@@ -1,7 +1,6 @@
 <script lang="ts">
     import { writable } from "svelte/store";
     import { createEventDispatcher, onMount } from "svelte";
-    import { browser } from "$app/environment";
     import type { Monster } from "$lib/types/monster";
 
     const dispatcher = createEventDispatcher();
@@ -19,17 +18,15 @@
     }
 
     onMount(async () => {
-        if (browser) {
-            await searchMonsters();
-        }
+        await searchMonsters();
     })
 </script>
 
-<div class="flex h-full flex-col gap-4">
+<div class="flex flex-col gap-4">
     <input class="input" placeholder="Search for monsters" type="search" bind:value={filter} on:input={() => searchMonsters()}>
 
-    <div class="h-full table-container">
-        <table class="table table-compact table-hover">
+    <div class="table-container">
+        <table class="table table-compact table-hover overflow-x-scroll">
             <thead>
             <tr>
                 <th>Name</th>

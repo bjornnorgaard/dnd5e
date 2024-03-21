@@ -10,6 +10,7 @@
     }
 
     const routes: Route[] = [
+        { label: "Home", route: "/", icon: Home },
         { label: "Tracker", route: "/tracker", icon: Timer },
         { label: "Players", route: "/tracker/players", icon: Group },
         { label: "Beasts", route: "/beastiary", icon: Dog },
@@ -17,14 +18,6 @@
     ];
 </script>
 <AppRail>
-    <svelte:fragment slot="lead">
-        <AppRailAnchor href="/">
-            <svelte:fragment slot="lead">
-                <Home/>
-            </svelte:fragment>
-            <span>Home</span>
-        </AppRailAnchor>
-    </svelte:fragment>
     {#each routes as r, i}
         <AppRailAnchor href={r.route} title={r.label} selected={$page.url.pathname === r.route}>
             <svelte:fragment slot="lead">
@@ -33,12 +26,4 @@
             <span>{r.label}</span>
         </AppRailAnchor>
     {/each}
-    <svelte:fragment slot="trail">
-        <AppRailAnchor href="/" title="Home">
-            <svelte:fragment slot="lead">
-                <ArrowLeft/>
-            </svelte:fragment>
-            <span>Home</span>
-        </AppRailAnchor>
-    </svelte:fragment>
 </AppRail>
