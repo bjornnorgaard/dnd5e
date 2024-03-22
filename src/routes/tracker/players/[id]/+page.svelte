@@ -1,6 +1,5 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
-    import { goto } from "$app/navigation";
     import { db, type Player } from "$lib/utils/database";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
 
@@ -23,7 +22,7 @@
         }
 
         await db.players.update($player?.id, updated);
-        await goto("/tracker/players");
+        window.history.back();
     }
 
     async function deletePlayer() {
@@ -33,7 +32,7 @@
         }
 
         await db.players.delete($player.id);
-        await goto("/tracker/players");
+        window.history.back();
     }
 </script>
 
@@ -41,7 +40,7 @@
     <p>No player found</p>
 {:else}
     <PageWrapper title={$player.name}>
-        <form class="flex flex-col gap-4" on:submit|preventDefault={submitPlayer}>
+        <form class="flex flex-col gap-4 p-4 card" on:submit|preventDefault={submitPlayer}>
             <label class="label" for="name">
                 <span>Name</span>
                 <input class="input" type="text" id="name" autocomplete="off" value={$player.name} placeholder="John Doe">
@@ -65,9 +64,9 @@
             <div class="flex justify-between">
                 <div class="space-x-4">
                     <button class="btn variant-filled-primary" type="submit">Submit</button>
-                    <a class="btn variant-soft-secondary" href="/tracker/players">Cancel</a>
+                    <button class="btn variant-soft-secondary" on:click={() => window.history.back()}>Cancel</button>
                 </div>
-                <button class="btn hover:text-error-500" on:click={async () => await deletePlayer()}>Delete</button>
+                <button class="btn text-error-500 hover:variant-filled-error" on:click={async () => await deletePlayer()}>Delete</button>
             </div>
         </form>
     </PageWrapper>

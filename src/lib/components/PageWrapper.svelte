@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { ArrowLeft } from "lucide-svelte";
+
     export let title: string;
 </script>
 
