@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
-    import { Group, Home, Rabbit, TestTube, Timer } from "lucide-svelte";
+    import { Group, Home, Rabbit, TableProperties, TestTube } from "lucide-svelte";
     import { page } from "$app/stores";
 
     interface Route {
@@ -11,7 +11,7 @@
 
     const routes: Route[] = [
         { label: "Home", route: "/", icon: Home },
-        { label: "Tracker", route: "/tracker", icon: Timer },
+        { label: "Tracker", route: "/tracker", icon: TableProperties },
         { label: "Players", route: "/tracker/players", icon: Group },
         { label: "Beasts", route: "/beasts", icon: Rabbit },
         { label: "Sandbox", route: "/sandbox", icon: TestTube },
