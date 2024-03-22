@@ -14,7 +14,7 @@ export interface Player {
 export interface Encounter {
     id?: number;
     title: string;
-    playerIds: string[];
+    playerIds: number[];
     monsters: Monster[];
 }
 

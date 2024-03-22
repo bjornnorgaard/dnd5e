@@ -12,7 +12,6 @@
     const routes: Route[] = [
         { label: "Home", route: "/", icon: Home },
         { label: "Tracker", route: "/tracker", icon: TableProperties },
-        { label: "Players", route: "/tracker/players", icon: Group },
         { label: "Beasts", route: "/beasts", icon: Rabbit },
         { label: "Sandbox", route: "/sandbox", icon: TestTube },
     ];
