@@ -82,7 +82,7 @@
         }
 
         await db.encounters.delete($encounter.id);
-        await goto("/tracker/encounters");
+        await goto("/combat/encounters");
     }
 </script>
 
@@ -157,7 +157,7 @@
                                 <td>{p.armorClass}</td>
                                 <td>{p.initiative}</td>
                                 <td class="space-x-4">
-                                    <a href={`/tracker/players/${p.id}`} class="text-secondary-500">edit</a>
+                                    <a href={`/combat/players/${p.id}`} class="text-secondary-500">edit</a>
                                     <button class="text-error-500" on:click={() => removePlayer(p.id)}>remove️</button>
                                 </td>
                             </tr>

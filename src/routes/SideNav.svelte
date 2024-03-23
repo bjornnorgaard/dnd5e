@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
-    import { Home, Rabbit, Swords } from "lucide-svelte";
+    import { Book, Home, Library, Rabbit, Swords } from "lucide-svelte";
     import { page } from "$app/stores";
 
     interface Route {
@@ -10,10 +10,12 @@
     }
 
     const routes: Route[] = [
-        { label: "Combat", route: "/tracker", icon: Swords },
+        { label: "Combat", route: "/combat", icon: Swords },
         { label: "Beasts", route: "/beasts", icon: Rabbit },
+        { label: "Spells", route: "/spells", icon: Library },
     ];
 </script>
+
 <AppRail>
     <AppRailAnchor href="/" title="Home" selected={$page.url.pathname === "/"}>
         <svelte:fragment slot="lead">

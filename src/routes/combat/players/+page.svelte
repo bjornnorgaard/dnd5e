@@ -13,7 +13,7 @@
             armorClass: 0,
         });
 
-        await goto(`/tracker/players/${id}`);
+        await goto(`/combat/players/${id}`);
     }
 
     const players = liveQuery(async () => await db.players.toArray());
@@ -44,7 +44,7 @@
                 <p>No players found</p>
             {:else}
                 {#each $players as p (p.id)}
-                    <tr on:click={async () => await goto(`/tracker/players/${p.id}`)} class="cursor-pointer">
+                    <tr on:click={async () => await goto(`/combat/players/${p.id}`)} class="cursor-pointer">
                         <td>{p.name}</td>
                         <td>{p.initiative}</td>
                         <td>{p.currentHp}/{p.maxHp}</td>

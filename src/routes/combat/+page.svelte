@@ -8,7 +8,7 @@
 
     async function newEncounter() {
         const createdId = await db.encounters.add({ title: "New Encounter", monsters: [], playerIds: [] });
-        await goto(`/tracker/encounters/${createdId}`)
+        await goto(`/combat/encounters/${createdId}`)
     }
 </script>
 
@@ -25,7 +25,7 @@
             <tbody>
             {#if $encounters}
                 {#each $encounters as e}
-                    <tr on:click={async () => await goto(`/tracker/encounters/${e.id}`)} class="cursor-pointer">
+                    <tr on:click={async () => await goto(`/combat/encounters/${e.id}`)} class="cursor-pointer">
                         <td>{e.title}</td>
                         <td>{e.monsters.length}</td>
                         <td>{e.playerIds.length}</td>
