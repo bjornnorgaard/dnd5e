@@ -2,7 +2,7 @@
     import { liveQuery } from "dexie";
     import { db } from "$lib/utils/database";
     import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
-    import { PersonStanding, Rabbit } from "lucide-svelte";
+    import { Edit, PersonStanding, Rabbit } from "lucide-svelte";
     import MonsterSearch from "$lib/components/MonsterSearch.svelte";
     import type { Monster } from "$lib/types/monster";
     import { goto } from "$app/navigation";
@@ -91,15 +91,57 @@
 {:else}
     <PageWrapper bind:title={$encounter.title}>
         <div class="flex flex-col gap-4">
-            <h2 class="flex gap-4 h2 w-fit">
-                <input type="text" class="input h2 variant-ghost" value={$encounter.title} on:input={(e) => titleChanged(e)}>
-            </h2>
+            <Accordion>
+                <AccordionItem>
+                    <svelte:fragment slot="lead"><Edit/></svelte:fragment>
+                    <svelte:fragment slot="summary">Edit encounter details</svelte:fragment>
+                    <svelte:fragment slot="content">
+                        <label class="label">Title
+                            <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
+                        </label>
+                    </svelte:fragment>
+                </AccordionItem>
+                <AccordionItem>
+                    <svelte:fragment slot="lead">
+                        <PersonStanding/>
+                    </svelte:fragment>
+                    <svelte:fragment slot="summary">Players</svelte:fragment>
+                    <svelte:fragment slot="content">
+                        {#if !$players}
+                            <ProgressBar value={undefined}/>
+                        {:else}
+                            <div class="flex gap-4 p-2">
+                                <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
+                                {#each $players as p}
+                                    <button class="chip"
+                                            class:variant-soft-secondary={!$encounter.playerIds.includes(p.id)}
+                                            class:hover:variant-filled-primary={!$encounter.playerIds.includes(p.id)}
+                                            class:chip-disabled={$encounter.playerIds.includes(p.id)}
+                                            disabled={$encounter.playerIds.includes(p.id)}
+                                            on:click={() => addPlayer(p.id)}>
+                                        <span>{p.name}</span>
+                                    </button>
+                                {/each}
+                            </div>
+                        {/if}
+                    </svelte:fragment>
+                </AccordionItem>
+                <AccordionItem>
+                    <svelte:fragment slot="lead">
+                        <Rabbit/>
+                    </svelte:fragment>
+                    <svelte:fragment slot="summary">Monsters</svelte:fragment>
+                    <svelte:fragment slot="content">
+                        <MonsterSearch on:select={e => addMonster(e)}/>
+                    </svelte:fragment>
+                </AccordionItem>
+            </Accordion>
 
             <div class="table-container">
                 <table class="table table-compact table-hover">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>Combatant</th>
                         <th>HP</th>
                         <th>AC</th>
                         <th>Initiative</th>
@@ -135,47 +177,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <Accordion spacing="space-y-4">
-                <div class="card">
-                    <AccordionItem open>
-                        <svelte:fragment slot="lead">
-                            <PersonStanding/>
-                        </svelte:fragment>
-                        <svelte:fragment slot="summary">Players</svelte:fragment>
-                        <svelte:fragment slot="content">
-                            {#if !$players}
-                                <ProgressBar value={undefined}/>
-                            {:else}
-                                <div class="flex gap-4 p-2">
-                                    <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
-                                    {#each $players as p}
-                                        <button class="chip"
-                                                class:variant-soft-secondary={!$encounter.playerIds.includes(p.id)}
-                                                class:hover:variant-filled-primary={!$encounter.playerIds.includes(p.id)}
-                                                class:chip-disabled={$encounter.playerIds.includes(p.id)}
-                                                disabled={$encounter.playerIds.includes(p.id)}
-                                                on:click={() => addPlayer(p.id)}>
-                                            <span>{p.name}</span>
-                                        </button>
-                                    {/each}
-                                </div>
-                            {/if}
-                        </svelte:fragment>
-                    </AccordionItem>
-                </div>
-                <div class="card">
-                    <AccordionItem>
-                        <svelte:fragment slot="lead">
-                            <Rabbit/>
-                        </svelte:fragment>
-                        <svelte:fragment slot="summary">Monsters</svelte:fragment>
-                        <svelte:fragment slot="content">
-                            <MonsterSearch on:select={e => addMonster(e)}/>
-                        </svelte:fragment>
-                    </AccordionItem>
-                </div>
-            </Accordion>
 
             <button class="btn btn-lg text-error-500 hover:variant-filled-error" on:click={() => deleteEncounter()}>Delete Encounter</button>
         </div>
