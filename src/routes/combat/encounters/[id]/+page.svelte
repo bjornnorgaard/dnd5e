@@ -1,6 +1,6 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
-    import { db } from "$lib/utils/database";
+    import { db, type Encounter } from "$lib/utils/database";
     import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
     import { Edit, PersonStanding, Rabbit } from "lucide-svelte";
     import MonsterSearch from "$lib/components/MonsterSearch.svelte";
@@ -89,7 +89,8 @@
 {#if !$encounter}
     <p>No encounter found</p>
 {:else}
-    <PageWrapper bind:title={$encounter.title}>
+    {@const e = $encounter}
+    <PageWrapper title={e.title}>
         <div class="flex flex-col gap-4">
             <Accordion>
                 <AccordionItem>
@@ -114,10 +115,10 @@
                                 <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
                                 {#each $players as p}
                                     <button class="chip"
-                                            class:variant-soft-secondary={!$encounter.playerIds.includes(p.id)}
-                                            class:hover:variant-filled-primary={!$encounter.playerIds.includes(p.id)}
-                                            class:chip-disabled={$encounter.playerIds.includes(p.id)}
-                                            disabled={$encounter.playerIds.includes(p.id)}
+                                            class:variant-soft-secondary={!e.playerIds.includes(p.id)}
+                                            class:hover:variant-filled-primary={!e.playerIds.includes(p.id)}
+                                            class:chip-disabled={e.playerIds.includes(p.id)}
+                                            disabled={e.playerIds.includes(p.id)}
                                             on:click={() => addPlayer(p.id)}>
                                         <span>{p.name}</span>
                                     </button>
@@ -150,7 +151,7 @@
                     </thead>
                     <tbody>
                     {#if $players}
-                        {#each $players.filter(p => $encounter?.playerIds.includes(p.id)) as p, i (p.id)}
+                        {#each $players.filter(p => e?.playerIds.includes(p.id)) as p, i (p.id)}
                             <tr>
                                 <td>{p.name}</td>
                                 <td>{p.currentHp}/{p.maxHp}</td>
@@ -163,7 +164,7 @@
                             </tr>
                         {/each}
                     {/if}
-                    {#each $encounter.monsters as m, i}
+                    {#each e.monsters as m, i}
                         <tr>
                             <td>{m.name}</td>
                             <td>{m.hit_points}</td>
