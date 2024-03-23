@@ -1,12 +1,12 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
-    import { db, type Encounter } from "$lib/utils/database";
-    import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
-    import { Edit, PersonStanding, Rabbit } from "lucide-svelte";
+    import { db } from "$lib/utils/database";
+    import { ProgressBar } from "@skeletonlabs/skeleton";
     import MonsterSearch from "$lib/components/MonsterSearch.svelte";
     import type { Monster } from "$lib/types/monster";
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
+    import PageSection from "$lib/components/PageSection.svelte";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(Number(data.id)));
@@ -92,94 +92,84 @@
     {@const e = $encounter}
     <PageWrapper title={e.title}>
         <div class="flex flex-col gap-4">
-            <Accordion>
-                <AccordionItem>
-                    <svelte:fragment slot="lead"><Edit/></svelte:fragment>
-                    <svelte:fragment slot="summary">Edit encounter details</svelte:fragment>
-                    <svelte:fragment slot="content">
-                        <label class="label">Title
-                            <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
-                        </label>
-                    </svelte:fragment>
-                </AccordionItem>
-                <AccordionItem>
-                    <svelte:fragment slot="lead">
-                        <PersonStanding/>
-                    </svelte:fragment>
-                    <svelte:fragment slot="summary">Players</svelte:fragment>
-                    <svelte:fragment slot="content">
-                        {#if !$players}
-                            <ProgressBar value={undefined}/>
-                        {:else}
-                            <div class="flex gap-4 p-2">
-                                <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
-                                {#each $players as p}
-                                    <button class="chip"
-                                            class:variant-soft-secondary={!e.playerIds.includes(p.id)}
-                                            class:hover:variant-filled-primary={!e.playerIds.includes(p.id)}
-                                            class:chip-disabled={e.playerIds.includes(p.id)}
-                                            disabled={e.playerIds.includes(p.id)}
-                                            on:click={() => addPlayer(p.id)}>
-                                        <span>{p.name}</span>
-                                    </button>
-                                {/each}
-                            </div>
-                        {/if}
-                    </svelte:fragment>
-                </AccordionItem>
-                <AccordionItem>
-                    <svelte:fragment slot="lead">
-                        <Rabbit/>
-                    </svelte:fragment>
-                    <svelte:fragment slot="summary">Monsters</svelte:fragment>
-                    <svelte:fragment slot="content">
-                        <MonsterSearch on:select={e => addMonster(e)}/>
-                    </svelte:fragment>
-                </AccordionItem>
-            </Accordion>
 
-            <div class="table-container">
-                <table class="table table-compact table-hover">
-                    <thead>
-                    <tr>
-                        <th>Combatant</th>
-                        <th>HP</th>
-                        <th>AC</th>
-                        <th>Initiative</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {#if $players}
-                        {#each $players.filter(p => e?.playerIds.includes(p.id)) as p, i (p.id)}
+            <PageSection title="Encounter" desc="Edit encounter details">
+
+            <label class="label">Title
+                <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
+            </label>
+            </PageSection>
+
+            <PageSection title="Players" desc="Click to add a player to the encounter">
+                {#if !$players}
+                    <ProgressBar value={undefined}/>
+                {:else}
+                    <div class="flex gap-4 p-2">
+                        <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
+                        {#each $players as p}
+                            <button class="chip"
+                                    class:variant-soft-secondary={!e.playerIds.includes(p.id)}
+                                    class:hover:variant-filled-primary={!e.playerIds.includes(p.id)}
+                                    class:chip-disabled={e.playerIds.includes(p.id)}
+                                    disabled={e.playerIds.includes(p.id)}
+                                    on:click={() => addPlayer(p.id)}>
+                                <span>{p.name}</span>
+                            </button>
+                        {/each}
+                    </div>
+                {/if}
+            </PageSection>
+
+            <PageSection title="Combatants" desc="List of combatants added to the encounter">
+                <div class="table-container">
+                    <table class="table table-compact table-hover">
+                        <thead>
+                        <tr>
+                            <th>Combatant</th>
+                            <th>HP</th>
+                            <th>AC</th>
+                            <th>Initiative</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {#if $players}
+                            {#each $players.filter(p => e?.playerIds.includes(p.id)) as p, i (p.id)}
+                                <tr>
+                                    <td>{p.name}</td>
+                                    <td>{p.currentHp}/{p.maxHp}</td>
+                                    <td>{p.armorClass}</td>
+                                    <td>{p.initiative}</td>
+                                    <td class="space-x-4">
+                                        <a href={`/combat/players/${p.id}`} class="text-secondary-500">edit</a>
+                                        <button class="text-error-500" on:click={() => removePlayer(p.id)}>remove️</button>
+                                    </td>
+                                </tr>
+                            {/each}
+                        {/if}
+                        {#each e.monsters as m, i}
                             <tr>
-                                <td>{p.name}</td>
-                                <td>{p.currentHp}/{p.maxHp}</td>
-                                <td>{p.armorClass}</td>
-                                <td>{p.initiative}</td>
-                                <td class="space-x-4">
-                                    <a href={`/combat/players/${p.id}`} class="text-secondary-500">edit</a>
-                                    <button class="text-error-500" on:click={() => removePlayer(p.id)}>remove️</button>
+                                <td>{m.name}</td>
+                                <td>{m.hit_points}</td>
+                                <td>{m.armor_class}</td>
+                                <td>{m.dexterity}</td>
+                                <td class="space-x-2">
+                                    <button class="text-error-500" on:click={() => removeMonster(i)}>remove</button>
                                 </td>
                             </tr>
                         {/each}
-                    {/if}
-                    {#each e.monsters as m, i}
-                        <tr>
-                            <td>{m.name}</td>
-                            <td>{m.hit_points}</td>
-                            <td>{m.armor_class}</td>
-                            <td>{m.dexterity}</td>
-                            <td class="space-x-2">
-                                <button class="text-error-500" on:click={() => removeMonster(i)}>remove</button>
-                            </td>
-                        </tr>
-                    {/each}
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            </PageSection>
 
-            <button class="btn btn-lg text-error-500 hover:variant-filled-error" on:click={() => deleteEncounter()}>Delete Encounter</button>
+            <PageSection title="Add monsters" desc="Search and click to add monsters to encounter">
+                <MonsterSearch on:select={e => addMonster(e)}/>
+            </PageSection>
+
+            <PageSection title="Actions" desc="Danger zone - mind your step">
+                <button class="btn btn-lg text-error-500 hover:variant-filled-error" on:click={() => deleteEncounter()}>Delete Encounter</button>
+            </PageSection>
         </div>
     </PageWrapper>
 {/if}

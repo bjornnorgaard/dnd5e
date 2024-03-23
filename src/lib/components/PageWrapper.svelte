@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="mx-auto max-w-screen-lg space-y-8 pt-[3vw] px-4">
+<div class="mx-auto max-w-screen-lg space-y-8 py-[3vw] px-4">
     <AppBar background="bg-transparent" padding="">
         <svelte:fragment slot="headline">
             <h1 class="h1 font-bold">{title}</h1>
