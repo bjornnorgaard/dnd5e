@@ -1,176 +1,187 @@
 <script lang="ts">
-    import type { Creature } from "$lib/types/creature";
-    import MonsterAttribute from "$lib/components/CreatureAttribute.svelte";
+    import CreatureStatAttribute from "$lib/components/CreatureStatAttribute.svelte";
     import { appendSign } from "$lib/utils/positiveSign";
     import StatblockSection from "$lib/components/StatblockSection.svelte";
     import StatblockDivider from "$lib/components/StatblockDivider.svelte";
     import { fetchSpells } from "$lib/utils/fetchSpells";
     import { ProgressBar } from "@skeletonlabs/skeleton";
-
-    export let monster: Creature | null = null;
+    import { statblock } from "$lib/stores/statblock";
+    import { CircleX } from "lucide-svelte";
 </script>
 
-<div class="p-4 text-sm card">
-    {#if !monster?.name}
-        <h2 class="h2">
-            Nothing selected
-        </h2>
-    {:else}
-        {@const m = monster}
-
-        <h3 class="font-bold h3 text-primary-500">{monster.name}</h3>
+{#if $statblock.creature}
+    {@const c = $statblock.creature}
+    <div class="p-4 text-sm card">
+        <div class="flex justify-between">
+            <h3 class="font-bold grow h3 text-primary-500">{c.name}</h3>
+            <button on:click={() => statblock.close()}>
+                <CircleX/>
+            </button>
+        </div>
 
         <p>
-            {#if m.size}{m.size},{/if}
-            {#if m.type}{m.type},{/if}
-            {#if m.subtype}{m.subtype},{/if}
-            {#if m.group}{m.group},{/if}
-            {#if m.alignment}{m.alignment}{/if}
+            {#if c.size}{c.size},{/if}
+            {#if c.type}{c.type},{/if}
+            <!--{#if c.subtype}{c.subtype},{/if}-->
+            {#if c.group}{c.group},{/if}
+            {#if c.alignment}{c.alignment}{/if}
         </p>
 
         <StatblockDivider/>
 
-        <p><b>Armor Class</b> {m.armor_class} ({m.armor_desc})</p>
-        <p><b>Hit Points</b> {m.hit_points} ({m.hit_dice})</p>
-        <p><b>Speed</b>
-            {#each Object.keys(m.speed) as key, i}
-                {#if m.speed[key]}
-                    {#if i !== 0},{/if}
-                    {key} {m.speed[key]} ft.
-                {/if}
-            {/each}
+        <p><b>Armor Class</b>
+            {c.armor_class}
+            {#if c.armor_desc}
+                ({c.armor_desc})
+            {/if}
         </p>
+        <p><b>Hit Points</b>
+            {c.hit_points}
+            {#if c.hit_dice}
+                ({c.hit_dice})
+            {/if}
+        </p>
+
+        {#if Object.keys(c.speed).length > 0}
+            <p><b>Speed</b>
+                {#each Object.keys(c.speed) as key, i}
+                    {#if c.speed[key]}
+                        {#if i !== 0},{/if}
+                        {key} {c.speed[key]} ft.
+                    {/if}
+                {/each}
+            </p>
+        {/if}
 
         <StatblockDivider/>
 
         <div class="flex justify-between py-1">
-            <MonsterAttribute label="str" value={m.strength}/>
-            <MonsterAttribute label="dex" value={m.dexterity}/>
-            <MonsterAttribute label="con" value={m.constitution}/>
-            <MonsterAttribute label="int" value={m.intelligence}/>
-            <MonsterAttribute label="wis" value={m.wisdom}/>
-            <MonsterAttribute label="cha" value={m.charisma}/>
+            <CreatureStatAttribute label="str" value={c.strength}/>
+            <CreatureStatAttribute label="dex" value={c.dexterity}/>
+            <CreatureStatAttribute label="con" value={c.constitution}/>
+            <CreatureStatAttribute label="int" value={c.intelligence}/>
+            <CreatureStatAttribute label="wis" value={c.wisdom}/>
+            <CreatureStatAttribute label="cha" value={c.charisma}/>
         </div>
 
         <StatblockDivider/>
 
-        {#if m.strength_save || m.dexterity_save || m.constitution_save || m.intelligence_save || m.wisdom_save || m.charisma_save}
+        {#if c.strength_save || c.dexterity_save || c.constitution_save || c.intelligence_save || c.wisdom_save || c.charisma_save}
             <p>
                 <b>Saving Throws</b>
-                {#if m.strength_save}
-                    <span>Str {appendSign(m.strength_save)}</span>,
+                {#if c.strength_save}
+                    <span>Str {appendSign(c.strength_save)}</span>,
                 {/if}
-                {#if m.dexterity_save}
-                    <span>Dex {appendSign(m.dexterity_save)}</span>,
+                {#if c.dexterity_save}
+                    <span>Dex {appendSign(c.dexterity_save)}</span>,
                 {/if}
-                {#if m.constitution_save}
-                    <span>Con {appendSign(m.constitution_save)}</span>,
+                {#if c.constitution_save}
+                    <span>Con {appendSign(c.constitution_save)}</span>,
                 {/if}
-                {#if m.intelligence_save}
-                    <span>Int {appendSign(m.intelligence_save)}</span>,
+                {#if c.intelligence_save}
+                    <span>Int {appendSign(c.intelligence_save)}</span>,
                 {/if}
-                {#if m.wisdom_save}
-                    <span>Wis {appendSign(m.wisdom_save)}</span>,
+                {#if c.wisdom_save}
+                    <span>Wis {appendSign(c.wisdom_save)}</span>,
                 {/if}
-                {#if m.charisma_save}
-                    <span>Cha {appendSign(m.charisma_save)}</span>
+                {#if c.charisma_save}
+                    <span>Cha {appendSign(c.charisma_save)}</span>
                 {/if}
             </p>
         {/if}
 
-        {#if Object.keys(m.skills).length > 0}
+        {#if Object.keys(c.skills).length > 0}
             <b>Skills</b>
-            {#each Object.keys(m.skills) as skill, i}
-                {#if m.skills[skill]}
+            {#each Object.keys(c.skills) as skill, i}
+                {#if c.skills[skill]}
                     {#if i !== 0},{/if}
-                    {skill} {appendSign(m.skills[skill])}
+                    {skill} {appendSign(c.skills[skill])}
                 {/if}
             {/each}
         {/if}
 
-        {#if m.damage_vulnerabilities}
+        {#if c.damage_vulnerabilities}
             <p>
                 <b>Damage Vulnerabilities</b>
-                <span>{m.damage_vulnerabilities}</span>
+                <span>{c.damage_vulnerabilities}</span>
             </p>
         {/if}
-        {#if m.damage_immunities}
+        {#if c.damage_immunities}
             <p>
                 <b>Damage Immunities</b>
-                <span>{m.damage_immunities}</span>
+                <span>{c.damage_immunities}</span>
             </p>
         {/if}
-        {#if m.condition_immunities}
+        {#if c.condition_immunities}
             <p>
                 <b>Condition Immunities</b>
-                <span>{m.condition_immunities}</span>
+                <span>{c.condition_immunities}</span>
             </p>
         {/if}
-        {#if m.damage_resistances}
+        {#if c.damage_resistances}
             <p>
                 <b>Damage Resistances</b>
-                <span>{m.damage_resistances}</span>
+                <span>{c.damage_resistances}</span>
             </p>
         {/if}
-
-        {#if m.senses}
+        {#if c.senses}
             <p>
                 <b>Senses</b>
-                <span>{m.senses}</span>
+                <span>{c.senses}</span>
             </p>
         {/if}
-
-        {#if m.languages}
+        {#if c.languages}
             <p>
                 <b>Languages</b>
-                <span>{m.languages}</span>
+                <span>{c.languages}</span>
+            </p>
+        {/if}
+        {#if c.challenge_rating}
+            <p>
+                <b>Challenge</b>
+                <span>{c.challenge_rating}</span>
             </p>
         {/if}
 
-        <p>
-            <b>Challenge</b>
-            <span>{m.challenge_rating}</span>
-        </p>
+        {#if c.damage_vulnerabilities || c.damage_immunities || c.condition_immunities || c.damage_resistances || c.senses || c.languages || c.challenge_rating}
+            <StatblockDivider/>
+        {/if}
 
-        <StatblockDivider/>
-
-        {#if m.special_abilities}
+        {#if c.special_abilities}
             <div class="pt-2 space-y-4">
-
-                {#each m.special_abilities as ability}
+                {#each c.special_abilities as ability}
                     <p><b>{ability.name}</b> {ability.desc}</p>
                 {/each}
             </div>
         {/if}
 
-        <StatblockSection title="Reactions" condition={!!m.reactions}>
-            {#each m.reactions as reaction}
+        <StatblockSection title="Reactions" condition={!!c.reactions?.length}>
+            {#each c.reactions as reaction}
                 <p><b>{reaction.name}</b> {reaction.desc}</p>
             {/each}
         </StatblockSection>
 
-        <StatblockSection title="Actions" condition={!!m.actions}>
-            {#each m.actions as action}
+        <StatblockSection title="Actions" condition={!!c.actions?.length}>
+            {#each c.actions as action}
                 <p><b>{action.name}</b> {action.desc}</p>
             {/each}
         </StatblockSection>
 
-        <StatblockSection title="Bonus Actions" condition={!!m.bonus_actions}>
-            {#each m.bonus_actions as action}
+        <StatblockSection title="Bonus Actions" condition={!!c.bonus_actions?.length}>
+            {#each c.bonus_actions as action}
                 <p><b>{action.name}</b> {action.desc}</p>
             {/each}
         </StatblockSection>
 
-        <StatblockSection title="Legendary Actions" condition={!!m.legendary_actions}>
-            <p>{m.legendary_desc}</p>
-
-            {#each m.legendary_actions as action}
+        <StatblockSection title="Legendary Actions" condition={!!c.legendary_actions?.length}>
+            <p>{c.legendary_desc}</p>
+            {#each c.legendary_actions as action}
                 <p><b>{action.name}</b> {action.desc}</p>
             {/each}
         </StatblockSection>
 
-        <StatblockSection title="Spells" condition={!!m.spell_list.length}>
-            {#each m.spell_list as url}
+        <StatblockSection title="Spells" condition={!!c.spell_list?.length}>
+            {#each c.spell_list as url}
                 {#await fetchSpells(url)}
                     <p class="py-2">
                         <ProgressBar value={undefined}/>
@@ -201,5 +212,5 @@
                 {/await}
             {/each}
         </StatblockSection>
-    {/if}
-</div>
+    </div>
+{/if}

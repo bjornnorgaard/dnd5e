@@ -43,10 +43,20 @@
                     {/each}
                 {/if}
                 </tbody>
+                <tfoot>
+                {#if $encounters}
+                    <tr class="font-bold">
+                        <td class="space-x-2">
+                            <span>Total Encounters</span>
+                            <span class="badge variant-filled-surface">{$encounters.length}</span>
+                        </td>
+                    </tr>
+                {/if}
+                </tfoot>
             </table>
         </div>
         <div>
-            <button on:click={async () => await createEncounter()} class="btn variant-ringed-primary">Create Encounter</button>
+            <button on:click={async () => await createEncounter()} class="btn variant-filled-primary">New Encounter</button>
         </div>
     </PageSection>
 
@@ -73,10 +83,20 @@
                     {/each}
                 {/if}
                 </tbody>
+                <tfoot>
+                {#if $players}
+                    <tr class="font-bold">
+                        <td class="space-x-2">
+                            <span>Total Players</span>
+                            <span class="badge variant-filled-surface">{$players.length}</span>
+                        </td>
+                    </tr>
+                {/if}
+                </tfoot>
             </table>
         </div>
         <div>
-            <button on:click={async () => await createPlayer()} class="btn variant-ringed-primary">New Player</button>
+            <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>
         </div>
     </PageSection>
 

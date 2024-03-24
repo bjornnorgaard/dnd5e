@@ -25,7 +25,6 @@
 <div class="space-y-4">
     <input class="input" placeholder="Search for creatures" type="search" bind:value={filter} on:input={() => searchCreatures()}>
 
-
     <div class="table-container">
         <table class="table table-compact table-hover">
             <thead>

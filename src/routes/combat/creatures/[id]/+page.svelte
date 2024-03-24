@@ -58,7 +58,7 @@
     {@const p = $player}
 
     <PageWrapper title={p.name}>
-        <PageSection title="Details" desc="Edit the details of the player">
+        <PageSection>
             <form class="space-y-4" on:submit|preventDefault={(e) => submitPlayer(e)}>
                 <label for="name">
                     <span>Name</span>
@@ -107,6 +107,7 @@
                     </label>
                 </div>
 
+                <br>
                 <div class="flex justify-between">
                     <div class="space-x-4">
                         <button class="btn variant-filled-primary" type="submit">Submit</button>

@@ -5,10 +5,11 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { ProgressBar, SlideToggle } from "@skeletonlabs/skeleton";
-    import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, StopCircle } from "lucide-svelte";
+    import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
+    import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
     import { rollDice } from "$lib/utils/diceRoller";
     import { flip } from "svelte/animate";
+    import { statblock } from "$lib/stores/statblock";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(data.id));
@@ -29,6 +30,10 @@
         }
 
         await db.encounters.update(data.id, { title: e.target.value });
+    }
+
+    async function editCreature(id: string) {
+        await goto(`/combat/creatures/${id}`);
     }
 
     async function togglePlayer(id: string) {
@@ -83,11 +88,27 @@
 {:else}
     {@const e = $encounter}
     <PageWrapper title={e.title}>
-        <PageSection title="Encounter" desc="Edit encounter details">
-            <label class="label">Title
-                <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
-            </label>
-        </PageSection>
+        <div class="space-y-4">
+            <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
+
+            {#if !$players}
+                <ProgressBar value={undefined}/>
+            {:else}
+                <div class="space-x-4">
+                    {#each $players as p}
+                        {@const included = e.creatureIds.includes(p.id)}
+                        <button class="chip"
+                                class:variant-filled-primary={included}
+                                class:variant-outline-primary={!included}
+                                on:click={() => togglePlayer(p.id)}
+                        >{p.name}</button>
+                    {/each}
+                    <button class="chip variant-outline-surface hover:variant-filled-success" on:click={async () => await addAllPlayersToEncounter(data.id)}>Everyone</button>
+                    <button class="chip variant-outline-surface hover:variant-filled-error" on:click={async () => await removeAllPlayersFromEncounter(data.id)}>None</button>
+                </div>
+            {/if}
+        </div>
+
         <PageSection title="Combatants" desc="List of combatants added to the encounter">
             <div class="table-container">
                 <table class="table table-compact table-hover">
@@ -105,18 +126,20 @@
                     <tbody>
                     {#if $creatures}
                         {#each $creatures.sort((a, b) => b.initiative - a.initiative) as p, i (p.id)}
-                            <tr class:table-row-checked={activeCombatant === i} animate:flip={{duration: 300}}
+                            <tr on:click={() => statblock.open(p)}
+                                class:table-row-checked={activeCombatant === i} animate:flip={{duration: 300}}
                                 class:line-through={p.current_hit_points <= 0}
                                 class:text-gray-500={p.current_hit_points <= 0}>
-                                <td class="flex gap-1 items-center">{p.name}</td>
+
+                                <td class="flex items-center gap-1">{p.name}</td>
                                 <td>{p.current_hit_points}/{p.hit_points}</td>
                                 <td>{p.armor_class}</td>
                                 {#if activeCombatant !== null}
                                     <td>{p.initiative}</td>
                                 {/if}
                                 <td class="space-x-4">
-                                    <a href={`/combat/creatures/${p.id}`} class="text-secondary-500">edit</a>
-                                    <button class="text-error-500" on:click={() => removeCreatureFromEncounter(data.id, p.id)}>remove️</button>
+                                    <button class="hover:anchor" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
+                                    <button class="hover:anchor" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
                                 </td>
                             </tr>
                         {/each}
@@ -126,7 +149,7 @@
             </div>
             <div class="flex gap-4">
                 {#if activeCombatant === null}
-                    <button on:click={() => startTrigger()} class="btn variant-filled-secondary space-x-2">
+                    <button on:click={() => startTrigger()} class="btn variant-filled-surface space-x-2">
                         <span>Start</span>
                         <PlayCircle/>
                     </button>
@@ -143,34 +166,28 @@
                         <span>Next</span>
                         <ArrowRightCircle/>
                     </button>
-                    <button on:click={() => rollInitiative()} class="btn variant-filled-tertiary space-x-2" disabled={activeCombatant === null}>
+                    <button on:click={() => rollInitiative()} class="btn variant-outline-surface space-x-2" disabled={activeCombatant === null}>
                         <span>Re-roll initiative</span>
                         <Dices/>
                     </button>
                 {/if}
             </div>
         </PageSection>
-        <PageSection title="Players" desc="Click to add or remove a player from the encounter">
-            {#if !$players}
-                <ProgressBar value={undefined}/>
-            {:else}
-                <div class="space-x-4">
-                    {#each $players as p}
-                        {@const included = e.creatureIds.includes(p.id)}
-                        <SlideToggle name={p.name} size="sm" active="bg-primary-500" checked={included} on:click={() => togglePlayer(p.id)}>{p.name}</SlideToggle>
-                    {/each}
-                </div>
-                <div class="space-x-4">
-                    <button class="btn btn-sm variant-filled-surface" on:click={async () => await addAllPlayersToEncounter(data.id)}>Add all</button>
-                    <button class="btn btn-sm variant-filled-surface" on:click={async () => await removeAllPlayersFromEncounter(data.id)}>Remove all</button>
-                </div>
-            {/if}
-        </PageSection>
         <PageSection title="Add creatures" desc="Search and click to add creatures to encounter">
             <MonsterSearch on:select={e => addCreatureToEncounter(data.id, e.detail.slug)}/>
         </PageSection>
-        <PageSection title="Danger Zone" desc="Ye' be forewarned, here be dragons - mind your step">
-            <button class="btn variant-filled-error" on:click={() => removeEncounter()}>Delete encounter</button>
+        <PageSection>
+            <Accordion>
+                <AccordionItem>
+                    <svelte:fragment slot="lead">
+                        <Skull/>
+                    </svelte:fragment>
+                    <svelte:fragment slot="summary">Danger Zone - Ye' be forewarned, here be dragons - mind your step</svelte:fragment>
+                    <svelte:fragment slot="content">
+                        <button class="btn variant-filled-error" on:click={() => removeEncounter()}>Delete encounter</button>
+                    </svelte:fragment>
+                </AccordionItem>
+            </Accordion>
         </PageSection>
     </PageWrapper>
 {/if}

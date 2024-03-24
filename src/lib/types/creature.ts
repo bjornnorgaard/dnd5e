@@ -12,7 +12,7 @@ export interface Creature {
     size: string;
     type: string;
     subtype: string;
-    group: any;
+    group: "";
     alignment: string;
     armor_class: number;
     armor_desc: string;
@@ -25,12 +25,12 @@ export interface Creature {
     intelligence: number;
     wisdom: number;
     charisma: number;
-    strength_save: any;
-    dexterity_save: any;
+    strength_save: number;
+    dexterity_save: number;
     constitution_save: number;
     intelligence_save: number;
     wisdom_save: number;
-    charisma_save: any;
+    charisma_save: number;
     perception: number;
     skills: Skills;
     damage_vulnerabilities: string;
@@ -43,7 +43,7 @@ export interface Creature {
     cr: number;
     actions: Action[];
     bonus_actions: any;
-    reactions: any;
+    reactions: Reaction[];
     legendary_desc: string;
     legendary_actions: LegendaryAction[];
     special_abilities: SpecialAbility[];
@@ -69,7 +69,7 @@ export function defaultCreature(): Creature {
         size: "",
         type: "",
         subtype: "",
-        group: {},
+        group: "",
         alignment: "",
         armor_class: 0,
         armor_desc: "",
@@ -82,12 +82,12 @@ export function defaultCreature(): Creature {
         intelligence: 0,
         wisdom: 0,
         charisma: 0,
-        strength_save: {},
-        dexterity_save: {},
+        strength_save: 0,
+        dexterity_save: 0,
         constitution_save: 0,
         intelligence_save: 0,
         wisdom_save: 0,
-        charisma_save: {},
+        charisma_save: 0,
         perception: 0,
         skills: {},
         damage_vulnerabilities: "",
@@ -100,7 +100,7 @@ export function defaultCreature(): Creature {
         cr: 0,
         actions: [],
         bonus_actions: {},
-        reactions: {},
+        reactions: [],
         legendary_desc: "",
         legendary_actions: [],
         special_abilities: [],
@@ -121,6 +121,11 @@ export interface Speed {
 
 export interface Skills {
     [skill: string]: number;
+}
+
+export interface Reaction {
+    name: string;
+    desc: string;
 }
 
 export interface Action {
