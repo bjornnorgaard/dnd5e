@@ -4,18 +4,22 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
+    import { newPlayer } from "$lib/utils/typeConstructors";
+    import { newEncounter } from "$lib/utils/typeConstructors.js";
 
     const encounters = liveQuery(async () => await db.encounters.toArray());
-    const players = liveQuery(async () => await db.players.toArray());
+    const players = liveQuery(async () => await db.creatures.where({ is_player: 1 }).toArray());
 
-    async function newEncounter() {
-        const createdId = await db.encounters.add({ title: "New Encounter", monsters: [], playerIds: [] });
+    async function createEncounter() {
+        const e = newEncounter({ title: "Unnamed Encounter" });
+        const createdId = await db.encounters.add(e);
         await goto(`/combat/encounters/${createdId}`)
     }
 
-    async function newPlayer() {
-        const createdId = await db.players.add({ name: "Unnamed Player", currentHp: 10, maxHp: 10, armorClass: 10, initiative: 0 });
-        await goto(`/combat/players/${createdId}`)
+    async function createPlayer() {
+        const player = newPlayer({ name: "Unnamed Player", armorClass: 10, hitPoints: 10, dexterity: 0 })
+        await db.creatures.add(player, player.id);
+        await goto(`/combat/creatures/${player.id}`)
     }
 </script>
 
@@ -26,8 +30,7 @@
                 <thead>
                 <tr>
                     <th>Encounter</th>
-                    <th>Monsters</th>
-                    <th>Players</th>
+                    <th>Creatures</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -35,8 +38,7 @@
                     {#each $encounters as e}
                         <tr on:click={async () => await goto(`/combat/encounters/${e.id}`)} class="cursor-pointer">
                             <td>{e.title}</td>
-                            <td>{e.monsters.length}</td>
-                            <td>{e.playerIds.length}</td>
+                            <td>{e.creatureIds.length}</td>
                         </tr>
                     {/each}
                 {/if}
@@ -44,7 +46,7 @@
             </table>
         </div>
         <div>
-            <button on:click={async () => await newEncounter()} class="btn variant-ringed-primary">Create Encounter</button>
+            <button on:click={async () => await createEncounter()} class="btn variant-ringed-primary">Create Encounter</button>
         </div>
     </PageSection>
 
@@ -62,11 +64,11 @@
                 <tbody>
                 {#if $players}
                     {#each $players as p}
-                        <tr on:click={async () => await goto(`/combat/players/${p.id}`)} class="cursor-pointer">
+                        <tr on:click={async () => await goto(`/combat/creatures/${p.id}`)} class="cursor-pointer">
                             <td>{p.name}</td>
-                            <td>{p.currentHp}/{p.maxHp}</td>
-                            <td>{p.armorClass}</td>
-                            <td>{p.initiative}</td>
+                            <td>{p.current_hit_points}/{p.hit_points}</td>
+                            <td>{p.armor_class}</td>
+                            <td>{p.dexterity}</td>
                         </tr>
                     {/each}
                 {/if}
@@ -74,7 +76,8 @@
             </table>
         </div>
         <div>
-            <button on:click={async () => await newPlayer()} class="btn variant-ringed-primary">New Player</button>
+            <button on:click={async () => await createPlayer()} class="btn variant-ringed-primary">New Player</button>
         </div>
     </PageSection>
+
 </PageWrapper>

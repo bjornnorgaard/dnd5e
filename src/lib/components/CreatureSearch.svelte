@@ -1,29 +1,29 @@
 <script lang="ts">
     import { writable } from "svelte/store";
     import { createEventDispatcher, onMount } from "svelte";
-    import type { Monster } from "$lib/types/monster";
+    import type { Creature } from "$lib/types/creature";
 
-    const dispatcher = createEventDispatcher();
-    const monsters = writable<Monster[]>([]);
+    const dispatch = createEventDispatcher();
+    const creatures = writable<Creature[]>([]);
     let filter = "";
 
-    async function searchMonsters(): Promise<void> {
-        const res = await fetch(`/api/monsters?filter=${filter}`);
+    async function searchCreatures(): Promise<void> {
+        const res = await fetch(`/api/creatures?filter=${filter}`);
         const data = await res.json();
-        monsters.set(data);
+        creatures.set(data);
     }
 
-    function monsterClicked(monster: Monster) {
-        dispatcher("select", monster);
+    function creatureClicked(creature: Creature) {
+        dispatch("select", creature);
     }
 
     onMount(async () => {
-        await searchMonsters();
+        await searchCreatures();
     })
 </script>
 
 <div class="space-y-4">
-    <input class="input" placeholder="Search for monsters" type="search" bind:value={filter} on:input={() => searchMonsters()}>
+    <input class="input" placeholder="Search for creatures" type="search" bind:value={filter} on:input={() => searchCreatures()}>
 
 
     <div class="table-container">
@@ -39,8 +39,8 @@
             </tr>
             </thead>
             <tbody>
-            {#each $monsters as m}
-                <tr on:click={() => monsterClicked(m)} class="cursor-pointer">
+            {#each $creatures as m}
+                <tr on:click={() => creatureClicked(m)} class="cursor-pointer">
                     <td>{m.challenge_rating}</td>
                     <td>{m.name}</td>
                     <td>{m.armor_class}</td>
@@ -53,7 +53,7 @@
             <tfoot>
             <tr class="font-bold">
                 <td colspan="5">Total results</td>
-                <td>{($monsters).length}</td>
+                <td>{($creatures).length}</td>
             </tfoot>
         </table>
     </div>

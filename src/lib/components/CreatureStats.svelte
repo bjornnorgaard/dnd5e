@@ -1,13 +1,13 @@
 <script lang="ts">
-    import type { Monster } from "$lib/types/monster";
-    import MonsterAttribute from "$lib/components/MonsterAttribute.svelte";
+    import type { Creature } from "$lib/types/creature";
+    import MonsterAttribute from "$lib/components/CreatureAttribute.svelte";
     import { appendSign } from "$lib/utils/positiveSign";
     import StatblockSection from "$lib/components/StatblockSection.svelte";
     import StatblockDivider from "$lib/components/StatblockDivider.svelte";
-    import { fetchSpell } from "$lib/utils/fetchSpell";
+    import { fetchSpells } from "$lib/utils/fetchSpells";
     import { ProgressBar } from "@skeletonlabs/skeleton";
 
-    export let monster: Monster | null = null;
+    export let monster: Creature | null = null;
 </script>
 
 <div class="p-4 text-sm card">
@@ -171,7 +171,7 @@
 
         <StatblockSection title="Spells" condition={!!m.spell_list.length}>
             {#each m.spell_list as url}
-                {#await fetchSpell(url)}
+                {#await fetchSpells(url)}
                     <p class="py-2">
                         <ProgressBar value={undefined}/>
                     </p>

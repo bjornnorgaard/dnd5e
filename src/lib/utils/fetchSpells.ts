@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
 import type { Spell } from "$lib/types/spell";
 
-export async function fetchSpell(url: string): Promise<Spell> {
+export async function fetchSpells(url: string): Promise<Spell> {
     if (url.endsWith("/")) {
         url = url.slice(0, -1);
     }

@@ -1,29 +1,31 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
-    import { db, type Player } from "$lib/utils/database";
+    import { db } from "$lib/utils/database";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
+    import { newPlayer } from "$lib/utils/typeConstructors.js";
+    import type { Creature } from "$lib/types/creature";
 
     async function create() {
-        const id = await db.players.add({
+        const player = newPlayer({
             name: "New Player",
-            initiative: 0,
-            currentHp: 0,
-            maxHp: 0,
-            armorClass: 0,
+            hitPoints: 10,
+            armorClass: 10,
+            dexterity: 10,
         });
 
-        await goto(`/combat/players/${id}`);
+        const id = await db.creatures.add(player);
+        await goto(`/combat/creatures/${id}`);
     }
 
-    const players = liveQuery(async () => await db.players.toArray());
+    const players = liveQuery(async () => await db.creatures.toArray());
 
-    async function removePlayer(player: Player) {
-        if (!player.id) {
+    async function removePlayer(player: Creature) {
+        if (!player.slug) {
             console.error("No player id");
             return;
         }
-        await db.players.delete(player.id);
+        await db.creatures.delete(player.slug);
     }
 </script>
 
@@ -43,12 +45,12 @@
             {#if !$players}
                 <p>No players found</p>
             {:else}
-                {#each $players as p (p.id)}
-                    <tr on:click={async () => await goto(`/combat/players/${p.id}`)} class="cursor-pointer">
+                {#each $players as p (p.slug)}
+                    <tr on:click={async () => await goto(`/combat/creatures/${p.slug}`)} class="cursor-pointer">
                         <td>{p.name}</td>
-                        <td>{p.initiative}</td>
-                        <td>{p.currentHp}/{p.maxHp}</td>
-                        <td>{p.armorClass}</td>
+                        <td>{p.dexterity}</td>
+                        <td>{p.current_hit_points}/{p.hit_points}</td>
+                        <td>{p.armor_class}</td>
                         <td>
                             <button class="btn btn-sm text-error-500" on:click={() => removePlayer(p)}>Delete</button>
                         </td>

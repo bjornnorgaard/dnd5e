@@ -7,7 +7,7 @@
     <hgroup>
         <h2 class="font-bold h2">{title}</h2>
         {#if desc}
-            <span class="pl-1">{desc}</span>
+            <span>{desc}</span>
         {/if}
     </hgroup>
     <slot/>
