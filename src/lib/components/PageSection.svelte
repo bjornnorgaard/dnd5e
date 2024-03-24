@@ -3,11 +3,11 @@
     export let desc: string = "";
 </script>
 
-<section class="bg-gradient-to-br p-4 py-4 shadow space-y-4 card from-surface-700 to-surface-800">
+<section class="py-4 space-y-4">
     <hgroup>
-        <h2 class="font-bold tracking-tighter h2">{title}</h2>
+        <h2 class="font-bold h2">{title}</h2>
         {#if desc}
-            <p>{desc}</p>
+            <span class="pl-1">{desc}</span>
         {/if}
     </hgroup>
     <slot/>

@@ -22,7 +22,7 @@
         await db.encounters.put(updated, updated.id);
     }
 
-    async function addPlayer(id: any) {
+    async function togglePlayer(id: any) {
         const updated = $encounter;
         if (!id || !updated) {
             console.error("No player or encounter found", id, updated);
@@ -30,7 +30,17 @@
         }
 
         if (updated.playerIds.includes(id)) {
-            console.log("Player already in encounter");
+            await removePlayer(id);
+            return;
+        }
+
+        await addPlayer(id);
+    }
+
+    async function addPlayer(id: any) {
+        const updated = $encounter;
+        if (!id || !updated) {
+            console.error("No player or encounter found", id, updated);
             return;
         }
 
@@ -51,6 +61,10 @@
 
     async function addAllPlayers() {
         $players.forEach(p => addPlayer(p.id));
+    }
+
+    function removeEveryone() {
+        $players.forEach(p => removePlayer(p.id));
     }
 
     async function addMonster(monster: CustomEvent<Monster>) {
@@ -94,28 +108,27 @@
         <div class="flex flex-col gap-4">
 
             <PageSection title="Encounter" desc="Edit encounter details">
-
-            <label class="label">Title
-                <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
-            </label>
+                <label class="label">Title
+                    <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
+                </label>
             </PageSection>
 
-            <PageSection title="Players" desc="Click to add a player to the encounter">
+            <PageSection title="Players" desc="Click to add or remove a player from the encounter">
                 {#if !$players}
                     <ProgressBar value={undefined}/>
                 {:else}
-                    <div class="flex gap-4 p-2">
-                        <button class="chip variant-soft-primary" on:click={() => addAllPlayers()}>Everyone</button>
+                    <div class="space-x-4">
+                        <button class="chip variant-filled-primary" on:click={() => addAllPlayers()}>Add all</button>
                         {#each $players as p}
+                            {@const included = e.playerIds.includes(p.id)}
                             <button class="chip"
-                                    class:variant-soft-secondary={!e.playerIds.includes(p.id)}
-                                    class:hover:variant-filled-primary={!e.playerIds.includes(p.id)}
-                                    class:chip-disabled={e.playerIds.includes(p.id)}
-                                    disabled={e.playerIds.includes(p.id)}
-                                    on:click={() => addPlayer(p.id)}>
+                                    class:variant-filled-secondary={!included}
+                                    class:variant-filled-warning={included}
+                                    on:click={() => togglePlayer(p.id)}>
                                 <span>{p.name}</span>
                             </button>
                         {/each}
+                        <button class="chip variant-filled-error" on:click={() => removeEveryone()}>Remove all</button>
                     </div>
                 {/if}
             </PageSection>
