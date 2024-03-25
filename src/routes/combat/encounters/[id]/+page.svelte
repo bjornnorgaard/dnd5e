@@ -145,6 +145,13 @@
                         {/each}
                     {/if}
                     </tbody>
+                    <tfoot>
+                    {#if $creatures}
+                        <tr class="font-bold">
+                            <td colspan={4}>Total combatants: {$creatures.length}</td>
+                        </tr>
+                    {/if}
+                    </tfoot>
                 </table>
             </div>
             <div class="flex gap-4">
