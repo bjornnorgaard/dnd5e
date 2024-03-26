@@ -1,6 +1,6 @@
 <script lang="ts">
     import { AppRail, AppRailAnchor } from "@skeletonlabs/skeleton";
-    import { BookHeart, CircleUser, Home, Library, Notebook, Rabbit, Swords } from "lucide-svelte";
+    import { BookHeart, Home, Library, Rabbit, Swords } from "lucide-svelte";
     import { page } from "$app/stores";
 
     interface Route {

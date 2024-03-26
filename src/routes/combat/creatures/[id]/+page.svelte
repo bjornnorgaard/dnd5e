@@ -113,7 +113,7 @@
                         <button class="btn variant-filled-primary" type="submit">Submit</button>
                         <button class="btn variant variant-ringed" type="reset" on:click={() => window.history.back()}>Back</button>
                     </div>
-                    <button class="btn text-error-500 variant-filled-error" type="button" on:click={async () => await deletePlayer()}>Delete</button>
+                    <button class="btn variant-filled-error" type="button" on:click={async () => await deletePlayer()}>Delete</button>
                 </div>
             </form>
         </PageSection>

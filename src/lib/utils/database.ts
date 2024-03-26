@@ -129,7 +129,7 @@ export async function removeAllPlayersFromEncounter(encounterId: string) {
     }
 }
 
-export async function updateCreature(creature: Creature){
+export async function updateCreature(creature: Creature) {
     await db.creatures.put(creature, creature.id);
 }
 
