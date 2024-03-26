@@ -5,7 +5,7 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
+    import { Accordion, AccordionItem, popup, type PopupSettings, ProgressBar } from "@skeletonlabs/skeleton";
     import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
     import { rollDice } from "$lib/utils/diceRoller";
     import { flip } from "svelte/animate";
@@ -81,7 +81,23 @@
             updateCreature(c);
         });
     }
+
+    const popupClick: PopupSettings = {
+        event: 'click',
+        target: 'popupClick',
+        placement: 'top',
+    };
+
 </script>
+
+<div class="w-60 rounded border-2 p-4 card border-primary-500" data-popup="popupClick">
+    <label for="damage" class="label">
+        <span>Apply damage</span>
+        <input type="number" class="input">
+        <span class="text-sm">Use negative for healing</span>
+    </label>
+    <div class="arrow"/>
+</div>
 
 {#if !$encounter}
     <p>No encounter found</p>
@@ -127,16 +143,25 @@
                     {#if $creatures}
                         {#each $creatures.sort((a, b) => b.initiative - a.initiative) as p, i (p.id)}
                             <tr on:click={() => statblock.open(p)}
+                                class="cursor-pointer"
                                 class:table-row-checked={activeCombatant === i} animate:flip={{duration: 300}}
                                 class:line-through={p.current_hit_points <= 0}
                                 class:text-gray-500={p.current_hit_points <= 0}>
 
                                 <td class="flex items-center gap-1">{p.name}</td>
-                                <td>{p.current_hit_points}/{p.hit_points}</td>
+
+                                <td>
+                                    <button class="btn btn-sm hover:variant-filled-primary" on:click|stopPropagation={() => {}} use:popup={popupClick}>
+                                        {p.current_hit_points}/{p.hit_points}
+                                    </button>
+                                </td>
+
                                 <td>{p.armor_class}</td>
+
                                 {#if activeCombatant !== null}
                                     <td>{p.initiative}</td>
                                 {/if}
+
                                 <td class="space-x-4">
                                     <button class="hover:anchor" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
                                     <button class="hover:anchor" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>

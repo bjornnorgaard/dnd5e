@@ -1,11 +1,14 @@
 <script lang="ts">
     import "../app.pcss";
-    import { AppShell, autoModeWatcher } from '@skeletonlabs/skeleton';
+    import { AppShell, autoModeWatcher, storePopup } from '@skeletonlabs/skeleton';
     import SideNav from "./SideNav.svelte";
     import { cubicIn } from "svelte/easing";
     import CreatureStats from "$lib/components/CreatureStats.svelte";
     import { statblock } from "$lib/stores/statblock";
+    import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
     import { slide } from "svelte/transition";
+
+    storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
 
 <svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
