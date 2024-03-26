@@ -11,16 +11,18 @@
     <AppBar background="bg-transparent" padding="">
         <svelte:fragment slot="headline">
             <h1 class="h1 font-bold">{title}</h1>
-            <ol class="breadcrumb pt-2">
-                {#each getBreadcrumbs($page.url.pathname) as crumb, i}
-                    {#if i < getBreadcrumbs($page.url.pathname).length - 1}
-                        <li class="crumb"><a class="anchor" href={crumb.route}>{crumb.label}</a></li>
-                        <li class="crumb-separator" aria-hidden="true">/</li>
-                    {:else}
-                        <li class="crumb">{crumb.label}</li>
-                    {/if}
-                {/each}
-            </ol>
+            {#if getBreadcrumbs($page.url.pathname).length > 1}
+                <ol class="breadcrumb pt-2">
+                    {#each getBreadcrumbs($page.url.pathname) as crumb, i}
+                        {#if i < getBreadcrumbs($page.url.pathname).length - 1}
+                            <li class="crumb"><a class="anchor" href={crumb.route}>{crumb.label}</a></li>
+                            <li class="crumb-separator" aria-hidden="true">/</li>
+                        {:else}
+                            <li class="crumb">{crumb.label}</li>
+                        {/if}
+                    {/each}
+                </ol>
+            {/if}
         </svelte:fragment>
     </AppBar>
 

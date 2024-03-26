@@ -1,12 +1,13 @@
 <script lang="ts">
     import "../app.pcss";
     import { AppShell, autoModeWatcher, storePopup } from '@skeletonlabs/skeleton';
-    import SideNav from "./SideNav.svelte";
+    import NavSide from "$lib/components/NavSide.svelte";
     import { cubicIn } from "svelte/easing";
     import CreatureStats from "$lib/components/CreatureStats.svelte";
     import { statblock } from "$lib/stores/statblock";
     import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
     import { slide } from "svelte/transition";
+    import NavBottom from "$lib/components/NavBottom.svelte";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
@@ -15,7 +16,9 @@
 
 <AppShell>
     <svelte:fragment slot="sidebarLeft">
-        <SideNav/>
+        <div class="hidden md:block">
+            <NavSide/>
+        </div>
     </svelte:fragment>
 
     <main class="h-full">
@@ -28,5 +31,11 @@
                 <CreatureStats/>
             </div>
         {/if}
+    </svelte:fragment>
+
+    <svelte:fragment slot="footer">
+        <div class="md:hidden">
+            <NavBottom/>
+        </div>
     </svelte:fragment>
 </AppShell>
