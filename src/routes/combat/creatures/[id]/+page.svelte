@@ -44,7 +44,7 @@
 
 <style lang="postcss">
     .row {
-        @apply flex gap-4 ;
+        @apply flex gap-4;
     }
 
     label {
@@ -57,7 +57,7 @@
 {:else}
     {@const p = $player}
 
-    <PageWrapper title={p.name}>
+    <PageWrapper title={p.name} desc="Edit character attributes and details">
         <PageSection>
             <form class="space-y-4" on:submit|preventDefault={(e) => submitPlayer(e)}>
                 <label for="name">
@@ -80,7 +80,7 @@
                     </label>
                 </div>
 
-                <div class="row">
+                <div class="grid grid-cols-3 gap-4 md:flex">
                     <label for="strength">
                         <span>Strength</span>
                         <input class="input" type="number" id="strength" autocomplete="off" value={p.strength}>

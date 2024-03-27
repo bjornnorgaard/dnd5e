@@ -7,6 +7,7 @@
     import { ProgressBar } from "@skeletonlabs/skeleton";
     import { statblock } from "$lib/stores/statblock";
     import { CircleX } from "lucide-svelte";
+    import SpellCard from "$lib/components/SpellCard.svelte";
 </script>
 
 {#if $statblock.creature}
@@ -187,26 +188,7 @@
                         <ProgressBar value={undefined}/>
                     </p>
                 {:then s}
-                    <div>
-                        <p><b class="text-lg text-primary-500">{s.name}</b></p>
-                        <p class="pb-2 italic">{s.level} {s.school.toLowerCase()} {s.can_be_cast_as_ritual ? "(ritual)" : ""}</p>
-                        <p><b>Casting Time</b> {s.casting_time}</p>
-                        <p><b>Range</b> {s.range}</p>
-                        <p><b>Components</b> {s.components}</p>
-                        {#if s.requires_material_components}
-                            <p><b>Materials</b> {s.material}</p>
-                        {/if}
-                        <p><b>Duration</b>
-                            {s.requires_concentration ? "Concentration," : ""}
-                            {s.duration.toLowerCase()}
-                        </p>
-
-                        <p class="pt-2 indent-4">{s.desc}</p>
-
-                        {#if s.higher_level}
-                            <p class="pt-2"><b>At Higher Levels</b> {s.higher_level}</p>
-                        {/if}
-                    </div>
+                    <SpellCard spell={s}/>
                 {:catch error}
                     <p>Error: {error}</p>
                 {/await}

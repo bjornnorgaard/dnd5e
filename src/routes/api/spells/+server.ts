@@ -12,7 +12,7 @@ export const GET = ({ url }) => {
     }
 
     const list: Spell[] = data?.results ?? [];
-    const res = list.filter(s => s.name.toLowerCase().includes(filter.toLowerCase())).slice(0, 50);
+    const res = list.filter(s => s.name.toLowerCase().includes(filter.toLowerCase())).slice(0, 10);
 
     return json(res);
 }

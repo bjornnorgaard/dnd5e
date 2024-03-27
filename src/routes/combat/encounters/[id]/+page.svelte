@@ -103,7 +103,7 @@
     <p>No encounter found</p>
 {:else}
     {@const e = $encounter}
-    <PageWrapper title={e.title}>
+    <PageWrapper title={e.title} desc="Add players and creature to use initiative tracker">
         <div class="space-y-4">
             <input type="text" class="input" value={$encounter.title} on:input={(e) => titleChanged(e)}>
 
