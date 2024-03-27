@@ -5,7 +5,6 @@
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
-    import TableFoot from "$lib/components/TableFoot.svelte";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
 
