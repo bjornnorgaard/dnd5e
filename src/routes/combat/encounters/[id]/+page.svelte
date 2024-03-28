@@ -5,7 +5,7 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { Accordion, AccordionItem, popup, type PopupSettings, ProgressBar } from "@skeletonlabs/skeleton";
+    import { Accordion, AccordionItem, popup, ProgressBar } from "@skeletonlabs/skeleton";
     import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
     import { rollDice } from "$lib/utils/diceRoller";
     import { flip } from "svelte/animate";
@@ -82,22 +82,30 @@
         });
     }
 
-    const popupClick: PopupSettings = {
-        event: 'click',
-        target: 'popupClick',
-        placement: 'top',
-    };
+    async function submitDamage(e: KeyboardEvent) {
+        if (e.key !== "Enter") {
+            return;
+        }
+
+        const target = e.target as HTMLInputElement;
+        const creature = $creatures.find(c => c.id === target.parentElement?.parentElement?.dataset.popup);
+        if (!creature) {
+            console.error("No creature found")
+            return;
+        }
+
+        const damage = parseInt(target.value);
+        if (isNaN(damage)) {
+            console.error("Invalid damage value");
+            return;
+        }
+
+        creature.current_hit_points -= damage;
+        await updateCreature(creature);
+        target.value = "";
+    }
 
 </script>
-
-<div class="w-60 rounded border-2 p-4 card border-primary-500" data-popup="popupClick">
-    <label for="damage" class="label">
-        <span>Apply damage</span>
-        <input type="number" class="input">
-        <span class="text-sm">Use negative for healing</span>
-    </label>
-    <div class="arrow"/>
-</div>
 
 {#if !$encounter}
     <p>No encounter found</p>
@@ -151,7 +159,18 @@
                                 <td class="flex items-center gap-1">{p.name}</td>
 
                                 <td>
-                                    <button class="btn btn-sm hover:variant-filled-primary" on:click|stopPropagation={() => {}} use:popup={popupClick}>
+                                    <div class="w-60 rounded border-2 p-4 card border-primary-500" data-popup={p.id}>
+                                        <label for="damage" class="label">
+                                            <span>Apply damage</span>
+                                            <input type="number" class="input" on:keydown={submitDamage}>
+                                            <span class="text-sm">Use negative for healing</span>
+                                        </label>
+                                        <div class="arrow"/>
+                                    </div>
+
+                                    <button class="btn btn-sm hover:variant-filled-primary"
+                                            on:click|stopPropagation={() => {}}
+                                            use:popup={{ event: 'click', target: p.id, placement: 'top'}}>
                                         {p.current_hit_points}/{p.hit_points}
                                     </button>
                                 </td>
