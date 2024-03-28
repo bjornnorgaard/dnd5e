@@ -5,12 +5,13 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { Accordion, AccordionItem, popup, ProgressBar } from "@skeletonlabs/skeleton";
+    import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
     import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
     import { rollDice } from "$lib/utils/diceRoller";
     import { flip } from "svelte/animate";
     import { statblock } from "$lib/stores/statblock";
     import { hitPointsColor } from "$lib/utils/hitPointsColor";
+    import PopupInput from "$lib/components/PopupInput.svelte";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(data.id));
@@ -83,30 +84,14 @@
         });
     }
 
-    function onHitPointsClicked(id: string) {
-        const input = document.getElementById(id);
-        if (input) input.focus();
-    }
-
-    async function submitDamage(e: KeyboardEvent) {
-        if (e.key !== "Enter") {
-            return;
-        }
-
-        const target = e.target as HTMLInputElement;
-        const creature = $creatures.find(c => c.id === target.parentElement?.parentElement?.dataset.popup);
+    async function submitDamage(e: CustomEvent) {
+        const creature = $creatures.find(c => c.id === e.detail.id);
         if (!creature) {
             console.error("No creature found")
             return;
         }
 
-        const damage = parseInt(target.value);
-        if (isNaN(damage)) {
-            console.error("Invalid damage value");
-            return;
-        }
-
-        creature.current_hit_points -= damage;
+        creature.current_hit_points -= e.detail.value;
 
         if (creature.current_hit_points < 0) {
             creature.current_hit_points = 0;
@@ -116,7 +101,17 @@
         }
 
         await updateCreature(creature);
-        target.value = "";
+    }
+
+    async function submitInitiative(e: CustomEvent) {
+        const creature = $creatures.find(c => c.id === e.detail.id);
+        if (!creature) {
+            console.error("No creature found")
+            return;
+        }
+
+        creature.initiative = e.detail.value;
+        await updateCreature(creature);
     }
 
 </script>
@@ -172,29 +167,21 @@
 
                                 <td class="flex items-center gap-1">{p.name}</td>
 
-                                <td>
-                                    <div class="w-60 rounded p-4 card bg-gradient-to-b from-surface-600 to-surface-600" data-popup={p.id}>
-                                        <label for="damage" class="label">
-                                            <span>Apply damage</span>
-                                            <input type="number" class="input " id={p.id} on:keydown={submitDamage}>
-                                            <span class="text-sm">Use negative for healing</span>
-                                        </label>
-                                        <div class="arrow bg-surface-600"/>
-                                    </div>
-
-                                    <button class="btn btn-sm hover:variant-filled-primary"
-                                            class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
-                                            class:text-error-500={hitPointsColor(p, 0,0.25)}
-                                            on:click|stopPropagation={() => onHitPointsClicked(p.id)}
-                                            use:popup={{ event: 'click', target: p.id, placement: 'top'}}>
+                                <td class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
+                                    class:text-error-500={hitPointsColor(p, 0,0.25)}>
+                                    <PopupInput label="Apply damage" help="Use negative for healing" id={p.id} on:submit={e => submitDamage(e)}>
                                         {p.current_hit_points}/{p.hit_points}
-                                    </button>
+                                    </PopupInput>
                                 </td>
 
                                 <td>{p.armor_class}</td>
 
                                 {#if activeCombatant !== null}
-                                    <td>{p.initiative}</td>
+                                    <td>
+                                        <PopupInput label="Set initiative" id={p.id} on:submit={e => submitInitiative(e)}>
+                                            {p.initiative}
+                                        </PopupInput>
+                                    </td>
                                 {/if}
 
                                 <td class="space-x-4">
