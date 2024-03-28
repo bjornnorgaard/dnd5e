@@ -28,7 +28,7 @@
     <svelte:fragment slot="sidebarRight">
         {#if $statblock.isOpen}
             <div class="w-96 p-4" in:slide={{axis: "x", duration: 100}} out:slide={{axis: "x", easing: cubicIn}}>
-                <CreatureStats/>
+                <CreatureStats creature={$statblock.creature}/>
             </div>
         {/if}
     </svelte:fragment>

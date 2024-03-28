@@ -8,10 +8,13 @@
     import { statblock } from "$lib/stores/statblock";
     import { CircleX } from "lucide-svelte";
     import SpellCard from "$lib/components/SpellCard.svelte";
+    import type { Creature } from "$lib/types/creature";
+
+    export let creature: Creature | null = null;
 </script>
 
-{#if $statblock.creature}
-    {@const c = $statblock.creature}
+{#if creature}
+    {@const c = creature}
     <div class="p-4 text-sm card">
         <div class="flex justify-between">
             <h3 class="font-bold grow h3 text-primary-500">{c.name}</h3>
