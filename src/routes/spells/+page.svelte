@@ -3,7 +3,6 @@
     import PageSection from "$lib/components/PageSection.svelte";
     import type { Spell } from "$lib/types/spell";
     import { onMount } from "svelte";
-    import { goto } from "$app/navigation";
     import SearchInput from "$lib/components/SearchInput.svelte";
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
@@ -34,9 +33,13 @@
             </TableHead>
             <TableBody>
                 {#each spells as s}
-                    <tr on:click={async () => await goto(`/spells/${s.slug}`)} class="cursor-pointer">
+                    <tr>
                         <td class="table-cell-fit">{s.spell_level}</td>
-                        <td>{s.name}</td>
+                        <td class="anchor">
+                            <a href={`/spells/${s.slug}`}>
+                                {s.name}
+                            </a>
+                        </td>
                         <td class="table-cell-fit">{s.school}</td>
                         <td><span class="line-clamp-1">{s.casting_time}</span></td>
                         <td>{s.duration}</td>

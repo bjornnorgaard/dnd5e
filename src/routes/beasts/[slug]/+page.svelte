@@ -13,7 +13,7 @@
 
 {#if data.creature}
     {@const c = data.creature}
-    <PageWrapper title={c.name} desc={`${c.type} ${c.subtype} ${c.group} ${c.alignment}`}>
+    <PageWrapper title={c.name} desc={`${c.type ?? ""} ${c.subtype ?? ""} ${c.group ?? ""} ${c.alignment ?? ""}`}>
 
         <div>
             <StatblockDivider/>

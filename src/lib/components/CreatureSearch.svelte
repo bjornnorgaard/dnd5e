@@ -39,9 +39,11 @@
         </TableHead>
         <TableBody>
             {#each $creatures as m}
-                <tr on:click={() => creatureClicked(m)} class="cursor-pointer">
+                <tr on:click={() => creatureClicked(m)}>
                     <td>{m.challenge_rating}</td>
-                    <td>{m.name}</td>
+                    <td class="anchor" on:click|stopPropagation>
+                        <a href={`/beasts/${m.slug}`}>{m.name}</a>
+                    </td>
                     <td>{m.armor_class}</td>
                     <td>{m.type}</td>
                     <td>{m.size}</td>
