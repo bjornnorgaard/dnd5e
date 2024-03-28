@@ -43,7 +43,7 @@
             {/if}
 
             <StatblockDivider/>
-            <div class="flex justify-between py-2 text-xl">
+            <div class="flex justify-between py-2 text-lg">
                 {#each [
                     {label: "str", value: c.strength},
                     {label: "dex", value: c.dexterity},
@@ -53,7 +53,7 @@
                     {label: "cha", value: c.charisma},
                 ] as s}
                     <div class="flex w-full flex-col gap-1 text-center">
-                        <div class="font-bold  uppercase tracking-tighter text-primary-500">{s.label}</div>
+                        <div class="font-bold uppercase tracking-tighter text-primary-500">{s.label}</div>
                         <div>
                             <span class="font-light">{s.value}</span>
                             (<span class="font-bold">{mapAttributeToModifier(s.value)}</span>)
@@ -179,14 +179,14 @@
             </StatblockSection>
 
             <StatblockSection title="Spells" condition={!!c.spell_list?.length}>
-                <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {#each c.spell_list as url}
                         {#await fetchSpells(url)}
                             <p class="py-2">
                                 <ProgressBar value={undefined}/>
                             </p>
                         {:then s}
-                            <div class="card p-4">
+                            <div class="p-4 card">
                                 <SpellCard spell={s}/>
                             </div>
                         {:catch error}
