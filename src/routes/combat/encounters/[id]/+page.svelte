@@ -173,13 +173,13 @@
                                 <td class="flex items-center gap-1">{p.name}</td>
 
                                 <td>
-                                    <div class="w-60 rounded border-2 p-4 card border-primary-500" data-popup={p.id}>
+                                    <div class="w-60 rounded p-4 card bg-gradient-to-b from-surface-600 to-surface-600" data-popup={p.id}>
                                         <label for="damage" class="label">
                                             <span>Apply damage</span>
-                                            <input type="number" class="input" id={p.id} on:keydown={submitDamage}>
+                                            <input type="number" class="input " id={p.id} on:keydown={submitDamage}>
                                             <span class="text-sm">Use negative for healing</span>
                                         </label>
-                                        <div class="arrow"/>
+                                        <div class="arrow bg-surface-600"/>
                                     </div>
 
                                     <button class="btn btn-sm hover:variant-filled-primary"
