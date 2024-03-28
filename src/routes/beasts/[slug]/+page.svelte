@@ -1,34 +1,209 @@
 <script lang="ts">
     import PageWrapper from "$lib/components/PageWrapper.svelte";
-    import { Accordion, AccordionItem } from "@skeletonlabs/skeleton";
+    import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
+    import { appendSign } from "$lib/utils/positiveSign";
+    import { fetchSpells } from "$lib/utils/fetchSpells";
+    import StatblockDivider from "$lib/components/StatblockDivider.svelte";
+    import StatblockSection from "$lib/components/StatblockSection.svelte";
+    import SpellCard from "$lib/components/SpellCard.svelte";
+    import { mapAttributeToModifier } from "$lib/utils/modifiers";
 
     export let data;
 </script>
 
-<PageWrapper title={data.spell.name} desc={`${data.spell.level} ${data.spell.school.toLowerCase()} ${data.spell.can_be_cast_as_ritual ? "(ritual)" : ""}`}>
-    <div>
-        <p><b>Casting Time</b> {data.spell.casting_time}</p>
-        <p><b>Range</b> {data.spell.range}</p>
-        <p><b>Components</b> {data.spell.components}</p>
-        {#if data.spell.requires_material_components && data.spell.material}
-            <p><b>Materials</b> {data.spell.material}</p>
-        {/if}
-        <p><b>Duration</b>
-            {data.spell.requires_concentration ? "Concentration," : ""}
-            {data.spell.duration.toLowerCase()}
-        </p>
+{#if data.creature}
+    {@const c = data.creature}
+    <PageWrapper title={c.name} desc={`${c.type} ${c.subtype} ${c.group} ${c.alignment}`}>
 
-        <p class="pt-2 indent-4">{data.spell.desc}</p>
+        <div>
+            <StatblockDivider/>
 
-        {#if data.spell.higher_level}
-            <p class="indent-4 pt-2"><b>At Higher Levels</b> {data.spell.higher_level}</p>
-        {/if}
-    </div>
+            <p><b>Armor Class</b>
+                {c.armor_class}
+                {#if c.armor_desc}
+                    ({c.armor_desc})
+                {/if}
+            </p>
+            <p><b>Hit Points</b>
+                {c.hit_points}
+                {#if c.hit_dice}
+                    ({c.hit_dice})
+                {/if}
+            </p>
 
-    <Accordion>
-        <AccordionItem>
-            <svelte:fragment slot="summary">Debug</svelte:fragment>
-            <svelte:fragment slot="content"><pre>{JSON.stringify(data, null, 2)}</pre></svelte:fragment>
-        </AccordionItem>
-    </Accordion>
-</PageWrapper>
+            {#if Object.keys(c.speed).length > 0}
+                <p><b>Speed</b>
+                    {#each Object.keys(c.speed) as key, i}
+                        {#if c.speed[key]}
+                            {#if i !== 0},{/if}
+                            {key} {c.speed[key]} ft.
+                        {/if}
+                    {/each}
+                </p>
+            {/if}
+
+            <StatblockDivider/>
+            <div class="flex justify-between py-2 text-xl">
+                {#each [
+                    {label: "str", value: c.strength},
+                    {label: "dex", value: c.dexterity},
+                    {label: "con", value: c.constitution},
+                    {label: "int", value: c.intelligence},
+                    {label: "wis", value: c.wisdom},
+                    {label: "cha", value: c.charisma},
+                ] as s}
+                    <div class="flex w-full flex-col gap-1 text-center">
+                        <div class="font-bold  uppercase tracking-tighter text-primary-500">{s.label}</div>
+                        <div>
+                            <span class="font-light">{s.value}</span>
+                            (<span class="font-bold">{mapAttributeToModifier(s.value)}</span>)
+                        </div>
+                    </div>
+                {/each}
+            </div>
+
+            <StatblockDivider/>
+
+            {#if c.strength_save || c.dexterity_save || c.constitution_save || c.intelligence_save || c.wisdom_save || c.charisma_save}
+                <p>
+                    <b>Saving Throws</b>
+                    {#if c.strength_save}
+                        <span>Str {appendSign(c.strength_save)}</span>,
+                    {/if}
+                    {#if c.dexterity_save}
+                        <span>Dex {appendSign(c.dexterity_save)}</span>,
+                    {/if}
+                    {#if c.constitution_save}
+                        <span>Con {appendSign(c.constitution_save)}</span>,
+                    {/if}
+                    {#if c.intelligence_save}
+                        <span>Int {appendSign(c.intelligence_save)}</span>,
+                    {/if}
+                    {#if c.wisdom_save}
+                        <span>Wis {appendSign(c.wisdom_save)}</span>,
+                    {/if}
+                    {#if c.charisma_save}
+                        <span>Cha {appendSign(c.charisma_save)}</span>
+                    {/if}
+                </p>
+            {/if}
+
+            {#if Object.keys(c.skills).length > 0}
+                <b>Skills</b>
+                {#each Object.keys(c.skills) as skill, i}
+                    {#if c.skills[skill]}
+                        {#if i !== 0},{/if}
+                        {skill} {appendSign(c.skills[skill])}
+                    {/if}
+                {/each}
+            {/if}
+
+            {#if c.damage_vulnerabilities}
+                <p>
+                    <b>Damage Vulnerabilities</b>
+                    <span>{c.damage_vulnerabilities}</span>
+                </p>
+            {/if}
+            {#if c.damage_immunities}
+                <p>
+                    <b>Damage Immunities</b>
+                    <span>{c.damage_immunities}</span>
+                </p>
+            {/if}
+            {#if c.condition_immunities}
+                <p>
+                    <b>Condition Immunities</b>
+                    <span>{c.condition_immunities}</span>
+                </p>
+            {/if}
+            {#if c.damage_resistances}
+                <p>
+                    <b>Damage Resistances</b>
+                    <span>{c.damage_resistances}</span>
+                </p>
+            {/if}
+            {#if c.senses}
+                <p>
+                    <b>Senses</b>
+                    <span>{c.senses}</span>
+                </p>
+            {/if}
+            {#if c.languages}
+                <p>
+                    <b>Languages</b>
+                    <span>{c.languages}</span>
+                </p>
+            {/if}
+            {#if c.challenge_rating}
+                <p>
+                    <b>Challenge</b>
+                    <span>{c.challenge_rating}</span>
+                </p>
+            {/if}
+
+            {#if c.damage_vulnerabilities || c.damage_immunities || c.condition_immunities || c.damage_resistances || c.senses || c.languages || c.challenge_rating}
+                <StatblockDivider/>
+            {/if}
+
+            {#if c.special_abilities}
+                <div class="pt-2 space-y-4">
+                    {#each c.special_abilities as ability}
+                        <p><b>{ability.name}</b> {ability.desc}</p>
+                    {/each}
+                </div>
+            {/if}
+
+            <StatblockSection title="Reactions" condition={!!c.reactions?.length}>
+                {#each c.reactions as reaction}
+                    <p><b>{reaction.name}</b> {reaction.desc}</p>
+                {/each}
+            </StatblockSection>
+
+            <StatblockSection title="Actions" condition={!!c.actions?.length}>
+                {#each c.actions as action}
+                    <p><b>{action.name}</b> {action.desc}</p>
+                {/each}
+            </StatblockSection>
+
+            <StatblockSection title="Bonus Actions" condition={!!c.bonus_actions?.length}>
+                {#each c.bonus_actions as action}
+                    <p><b>{action.name}</b> {action.desc}</p>
+                {/each}
+            </StatblockSection>
+
+            <StatblockSection title="Legendary Actions" condition={!!c.legendary_actions?.length}>
+                <p>{c.legendary_desc}</p>
+                {#each c.legendary_actions as action}
+                    <p><b>{action.name}</b> {action.desc}</p>
+                {/each}
+            </StatblockSection>
+
+            <StatblockSection title="Spells" condition={!!c.spell_list?.length}>
+                <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {#each c.spell_list as url}
+                        {#await fetchSpells(url)}
+                            <p class="py-2">
+                                <ProgressBar value={undefined}/>
+                            </p>
+                        {:then s}
+                            <div class="card p-4">
+                                <SpellCard spell={s}/>
+                            </div>
+                        {:catch error}
+                            <p>Error: {error}</p>
+                        {/await}
+                    {/each}
+                </div>
+            </StatblockSection>
+        </div>
+
+        <Accordion>
+            <AccordionItem>
+                <svelte:fragment slot="summary">Debug</svelte:fragment>
+                <svelte:fragment slot="content">
+                    <pre>{JSON.stringify(data, null, 2)}</pre>
+                </svelte:fragment>
+            </AccordionItem>
+        </Accordion>
+    </PageWrapper>
+{/if}

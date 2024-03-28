@@ -1,13 +1,9 @@
 <script lang="ts">
-    import { appendSign } from "$lib/utils/positiveSign";
+    import { mapAttributeToModifier } from "$lib/utils/modifiers";
 
     export let label: string;
     export let value: number;
 
-    function mapAttributeToModifier(value: number): string {
-        const modifier = Math.floor((value - 10) / 2);
-        return appendSign(modifier);
-    }
 </script>
 
 <div class="flex w-full flex-col gap-1 text-center">

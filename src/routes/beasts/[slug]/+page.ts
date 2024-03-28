@@ -1,16 +1,16 @@
 import { error } from "@sveltejs/kit";
 
-export const load = async ({params, fetch}) => {
+export const load = async ({ params, fetch }) => {
     if (!params.slug) {
         error(400, "No slug provided");
     }
 
-    const res = await fetch(`/api/spells/${params.slug}`);
-    const spell = await res.json();
+    const res = await fetch(`/api/creatures/${params.slug}`);
+    const creature = await res.json();
 
-    if (!spell) {
-        error(404, "Spell not found");
+    if (!creature) {
+        error(404, "Creature not found");
     }
 
-    return {spell: spell};
+    return { creature: creature };
 }

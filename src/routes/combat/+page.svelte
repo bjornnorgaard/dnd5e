@@ -88,10 +88,10 @@
                     </tr>
                 {/if}
             </TableFoot>
-            <div>
-                <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>
-            </div>
         </Table>
+        <div>
+            <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>
+        </div>
     </PageSection>
 
 </PageWrapper>

@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 
-export const load = async ({params, fetch}) => {
+export const load = async ({ params, fetch }) => {
     if (!params.slug) {
         error(400, "No slug provided");
     }
@@ -12,5 +12,5 @@ export const load = async ({params, fetch}) => {
         error(404, "Spell not found");
     }
 
-    return {spell: spell};
+    return { spell: spell };
 }
