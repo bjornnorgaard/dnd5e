@@ -12,6 +12,9 @@
     import { statblock } from "$lib/stores/statblock";
     import { hitPointsColor } from "$lib/utils/hitPointsColor";
     import PopupInput from "$lib/components/PopupInput.svelte";
+    import Table from "$lib/components/Table.svelte";
+    import TableHead from "$lib/components/TableHead.svelte";
+    import TableBody from "$lib/components/TableBody.svelte";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(data.id));
@@ -143,20 +146,17 @@
         </div>
 
         <PageSection title="Combatants" desc="List of combatants added to the encounter. Click HP to apply damage/healing.">
-            <div class="table-container">
-                <table class="table table-compact table-hover">
-                    <thead>
-                    <tr>
-                        <th>Combatant</th>
-                        <th>HP</th>
-                        <th>AC</th>
-                        {#if activeCombatant !== null}
-                            <th>Initiative</th>
-                        {/if}
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+            <Table>
+                <TableHead>
+                    {#if activeCombatant !== null}
+                        <th class="table-cell-fit">Init</th>
+                    {/if}
+                    <th>Combatant</th>
+                    <th class="text-center">HP</th>
+                    <th class="text-center">AC</th>
+                    <th class="text-end">Actions</th>
+                </TableHead>
+                <TableBody>
                     {#if $creatures}
                         {#each $creatures.sort((a, b) => b.initiative - a.initiative) as p, i (p.id)}
                             <tr on:click={() => statblock.open(p)}
@@ -165,42 +165,35 @@
                                 class:line-through={p.current_hit_points <= 0}
                                 class:text-gray-500={p.current_hit_points <= 0}>
 
-                                <td class="flex items-center gap-1">{p.name}</td>
-
-                                <td class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
-                                    class:text-error-500={hitPointsColor(p, 0,0.25)}>
-                                    <PopupInput label="Apply damage" help="Use negative for healing" id={p.id} on:submit={e => submitDamage(e)}>
-                                        {p.current_hit_points}/{p.hit_points}
-                                    </PopupInput>
-                                </td>
-
-                                <td>{p.armor_class}</td>
-
                                 {#if activeCombatant !== null}
-                                    <td>
+                                    <td class="table-cell-fit">
                                         <PopupInput label="Set initiative" id={p.id} on:submit={e => submitInitiative(e)}>
                                             {p.initiative}
                                         </PopupInput>
                                     </td>
                                 {/if}
 
-                                <td class="space-x-4">
-                                    <button class="hover:anchor" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
-                                    <button class="hover:anchor" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
+                                <td class="text-start">{p.name}</td>
+
+                                <td class="text-center"
+                                    class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
+                                    class:text-error-500={hitPointsColor(p, 0,0.25)}>
+                                    <PopupInput label="Apply damage" help="Use negative for healing" id={p.id} on:submit={e => submitDamage(e)}>
+                                        {p.current_hit_points}/{p.hit_points}
+                                    </PopupInput>
+                                </td>
+
+                                <td class="text-center">{p.armor_class}</td>
+
+                                <td class="text-end">
+                                    <button class="rounded px-2 text-surface-500  hover:variant-filled-secondary" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
+                                    <button class="rounded px-2 text-surface-500  hover:variant-filled-error" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
                                 </td>
                             </tr>
                         {/each}
                     {/if}
-                    </tbody>
-                    <tfoot>
-                    {#if $creatures}
-                        <tr class="font-bold">
-                            <td colspan={4}>Total combatants: {$creatures.length}</td>
-                        </tr>
-                    {/if}
-                    </tfoot>
-                </table>
-            </div>
+                </TableBody>
+            </Table>
             <div class="flex gap-4">
                 {#if activeCombatant === null}
                     <button on:click={() => startTrigger()} class="btn variant-filled-surface space-x-2">
@@ -227,9 +220,11 @@
                 {/if}
             </div>
         </PageSection>
+
         <PageSection title="Add creatures" desc="Search and click to add creatures to encounter">
             <MonsterSearch on:select={e => addCreatureToEncounter(data.id, e.detail.slug)}/>
         </PageSection>
+
         <PageSection>
             <Accordion>
                 <AccordionItem>

@@ -34,7 +34,7 @@
     }
 </script>
 
-<div class="w-60 rounded bg-gradient-to-b p-4 card from-surface-600 to-surface-600"
+<div class="w-60 rounded bg-gradient-to-b p-4 text-start text-neutral-50 card from-surface-600 to-surface-600"
      data-popup={label+id}>
 
     <label for="damage" class="label">
@@ -47,7 +47,7 @@
     <div class="arrow bg-surface-600"/>
 </div>
 
-<button class="btn btn-sm hover:variant-filled-primary"
+<button class="rounded px-2 hover:variant-filled-primary"
         on:click|stopPropagation={() => onElementClicked(label+id)}
         use:popup={{ event: 'click', target: label+id, placement: 'top'}}>
     <slot/>
