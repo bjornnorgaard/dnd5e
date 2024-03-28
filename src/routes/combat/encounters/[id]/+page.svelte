@@ -10,6 +10,7 @@
     import { rollDice } from "$lib/utils/diceRoller";
     import { flip } from "svelte/animate";
     import { statblock } from "$lib/stores/statblock";
+    import { hitPointsColor } from "$lib/utils/hitPointsColor";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(data.id));
@@ -82,6 +83,11 @@
         });
     }
 
+    function onHitPointsClicked(id: string) {
+        const input = document.getElementById(id);
+        if (input) input.focus();
+    }
+
     async function submitDamage(e: KeyboardEvent) {
         if (e.key !== "Enter") {
             return;
@@ -101,6 +107,14 @@
         }
 
         creature.current_hit_points -= damage;
+
+        if (creature.current_hit_points < 0) {
+            creature.current_hit_points = 0;
+        }
+        if (creature.current_hit_points > creature.hit_points) {
+            creature.current_hit_points = creature.hit_points;
+        }
+
         await updateCreature(creature);
         target.value = "";
     }
@@ -133,7 +147,7 @@
             {/if}
         </div>
 
-        <PageSection title="Combatants" desc="List of combatants added to the encounter">
+        <PageSection title="Combatants" desc="List of combatants added to the encounter. Click HP to apply damage/healing.">
             <div class="table-container">
                 <table class="table table-compact table-hover">
                     <thead>
@@ -162,14 +176,16 @@
                                     <div class="w-60 rounded border-2 p-4 card border-primary-500" data-popup={p.id}>
                                         <label for="damage" class="label">
                                             <span>Apply damage</span>
-                                            <input type="number" class="input" on:keydown={submitDamage}>
+                                            <input type="number" class="input" id={p.id} on:keydown={submitDamage}>
                                             <span class="text-sm">Use negative for healing</span>
                                         </label>
                                         <div class="arrow"/>
                                     </div>
 
                                     <button class="btn btn-sm hover:variant-filled-primary"
-                                            on:click|stopPropagation={() => {}}
+                                            class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
+                                            class:text-error-500={hitPointsColor(p, 0,0.25)}
+                                            on:click|stopPropagation={() => onHitPointsClicked(p.id)}
                                             use:popup={{ event: 'click', target: p.id, placement: 'top'}}>
                                         {p.current_hit_points}/{p.hit_points}
                                     </button>
