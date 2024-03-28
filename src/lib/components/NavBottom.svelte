@@ -13,7 +13,7 @@
         border="border-t-2 border-primary-500"
         class="bg-surface-100-800-token w-full">
     {#each routes as r}
-        <TabAnchor href={r.route} selected={$page.url.pathname.includes(r.route)}>
+        <TabAnchor href={r.route} selected={$page.url.pathname.includes(r.route) && r.route !== "/"}>
             <svelte:fragment slot="lead">
                 <div class="flex justify-center">
                     <svelte:component this={r.icon}/>
