@@ -2,14 +2,17 @@
     import { writable } from "svelte/store";
     import { createEventDispatcher, onMount } from "svelte";
     import type { Creature } from "$lib/types/creature";
+    import SearchInput from "$lib/components/SearchInput.svelte";
+    import Table from "$lib/components/Table.svelte";
+    import TableHead from "$lib/components/TableHead.svelte";
+    import TableBody from "$lib/components/TableBody.svelte";
+    import TableFoot from "$lib/components/TableFoot.svelte";
 
     const dispatch = createEventDispatcher();
     const creatures = writable<Creature[]>([]);
-    let filter = "";
 
-    async function searchCreatures(): Promise<void> {
-        const res = await fetch(`/api/creatures?filter=${filter}`);
-        const data = await res.json();
+    async function searchCreatures(query: string, take: number) {
+        const data = await fetch(`/api/creatures?query=${query}&take=${take}`).then(r => r.json());
         creatures.set(data);
     }
 
@@ -18,26 +21,23 @@
     }
 
     onMount(async () => {
-        await searchCreatures();
+        await searchCreatures("", 10);
     })
 </script>
 
 <div class="space-y-4">
-    <input class="input" placeholder="Search for creatures" type="search" bind:value={filter} on:input={() => searchCreatures()}>
+    <SearchInput label="Search Creatures" on:change={async (e) => await searchCreatures(e.detail.query, e.detail.take)}/>
 
-    <div class="table-container">
-        <table class="table table-compact table-hover">
-            <thead>
-            <tr>
-                <th>CR</th>
-                <th>Name</th>
-                <th>AC</th>
-                <th>Type</th>
-                <th>Size</th>
-                <th>Alignment</th>
-            </tr>
-            </thead>
-            <tbody>
+    <Table>
+        <TableHead>
+            <th>CR</th>
+            <th>Name</th>
+            <th>AC</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Alignment</th>
+        </TableHead>
+        <TableBody>
             {#each $creatures as m}
                 <tr on:click={() => creatureClicked(m)} class="cursor-pointer">
                     <td>{m.challenge_rating}</td>
@@ -48,12 +48,10 @@
                     <td>{m.alignment}</td>
                 </tr>
             {/each}
-            </tbody>
-            <tfoot>
-            <tr class="font-bold">
-                <td colspan="5">Total results</td>
-                <td>{($creatures).length}</td>
-            </tfoot>
-        </table>
-    </div>
+        </TableBody>
+        <TableFoot>
+            <td colspan="5">Total results</td>
+            <td>{($creatures).length}</td>
+        </TableFoot>
+    </Table>
 </div>
