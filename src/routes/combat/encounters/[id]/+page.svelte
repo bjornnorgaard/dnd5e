@@ -136,8 +136,7 @@
                         <button class="chip"
                                 class:variant-filled-primary={included}
                                 class:variant-outline-primary={!included}
-                                on:click={() => togglePlayer(p.id)}
-                        >{p.name}</button>
+                                on:click={() => togglePlayer(p.id)}>{p.name}</button>
                     {/each}
                     <button class="chip variant-outline-surface hover:variant-filled-success" on:click={async () => await addAllPlayersToEncounter(data.id)}>Everyone</button>
                     <button class="chip variant-outline-surface hover:variant-filled-error" on:click={async () => await removeAllPlayersFromEncounter(data.id)}>None</button>
