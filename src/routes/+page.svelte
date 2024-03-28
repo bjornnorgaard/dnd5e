@@ -1,11 +1,7 @@
-<script lang="ts">
-    import { addDefaultPlayers } from "$lib/utils/database";
+<script>
     import PageWrapper from "$lib/components/PageWrapper.svelte";
-    import PageSection from "$lib/components/PageSection.svelte";
 </script>
 
-<PageWrapper title="D&D by Bear">
-    <PageSection title="Quick Actions" desc="These are just for me while debugging">
-        <button class="btn variant-filled-primary" on:click={async () => await addDefaultPlayers()}>Add Default Players</button>
-    </PageSection>
+<PageWrapper title="D&D by Bear" desc="An nice onboarding tutorial is coming...">
+    <p>For now go to one of the other sections and try to figure it out - good luck.</p>
 </PageWrapper>

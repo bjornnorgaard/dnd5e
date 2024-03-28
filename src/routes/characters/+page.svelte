@@ -3,5 +3,5 @@
 </script>
 
 <PageWrapper title="Characters" desc="Create and manage your own characters">
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, laudantium!</p>
+    <p>Here you'll be able to manage your own characters - eventually...</p>
 </PageWrapper>

@@ -145,7 +145,7 @@
             {/if}
         </div>
 
-        <PageSection title="Combatants" desc="List of combatants added to the encounter. Click HP to apply damage/healing.">
+        <PageSection title="Combatants" desc="Click HP and initiative in rows to edit">
             <Table>
                 <TableHead>
                     {#if activeCombatant !== null}
@@ -186,8 +186,8 @@
                                 <td class="text-center">{p.armor_class}</td>
 
                                 <td class="text-end">
-                                    <button class="rounded px-2 text-surface-500  hover:variant-filled-secondary" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
-                                    <button class="rounded px-2 text-surface-500  hover:variant-filled-error" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
+                                    <button class="rounded px-2 text-surface-500 hover:variant-filled-secondary" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
+                                    <button class="rounded px-2 text-surface-500 hover:variant-filled-error" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
                                 </td>
                             </tr>
                         {/each}

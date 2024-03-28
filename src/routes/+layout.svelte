@@ -1,6 +1,6 @@
 <script lang="ts">
     import "../app.pcss";
-    import { AppShell, autoModeWatcher, storePopup } from '@skeletonlabs/skeleton';
+    import { AppShell, storePopup } from '@skeletonlabs/skeleton';
     import NavSide from "$lib/components/NavSide.svelte";
     import { cubicIn } from "svelte/easing";
     import CreatureStats from "$lib/components/CreatureStats.svelte";
@@ -11,8 +11,6 @@
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 </script>
-
-<svelte:head>{@html '<script>(' + autoModeWatcher.toString() + ')();</script>'}</svelte:head>
 
 <AppShell>
     <svelte:fragment slot="sidebarLeft">
