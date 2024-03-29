@@ -1,8 +1,8 @@
 <script lang="ts">
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
-    import { appendSign } from "$lib/utils/positiveSign";
-    import { fetchSpells } from "$lib/utils/fetchSpells";
+    import { appendSign } from "$lib/utils/positive-sign";
+    import { fetchSpells } from "$lib/utils/fetch-spells";
     import StatblockDivider from "$lib/components/StatblockDivider.svelte";
     import StatblockSection from "$lib/components/StatblockSection.svelte";
     import SpellCard from "$lib/components/SpellCard.svelte";

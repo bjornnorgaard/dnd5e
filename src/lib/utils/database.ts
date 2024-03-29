@@ -1,9 +1,9 @@
 // db.ts
 import Dexie, { type Table } from 'dexie';
 import type { Creature } from "$lib/types/creature";
-import { fetchCreatureBySlug } from "$lib/utils/fetchCreatures";
-import { newPlayer } from "$lib/utils/typeConstructors";
-import { rollDice } from "$lib/utils/diceRoller";
+import { fetchCreatureBySlug } from "$lib/utils/fetch-creatures";
+import { newPlayer } from "$lib/utils/type-constructors";
+import { rollDice } from "$lib/utils/dice-roller";
 
 export interface Encounter {
     id: string;

@@ -4,8 +4,8 @@
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { newPlayer } from "$lib/utils/typeConstructors";
-    import { newEncounter } from "$lib/utils/typeConstructors.js";
+    import { newPlayer } from "$lib/utils/type-constructors";
+    import { newEncounter } from "$lib/utils/type-constructors.js";
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";

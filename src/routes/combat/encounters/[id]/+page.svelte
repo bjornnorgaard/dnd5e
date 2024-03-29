@@ -7,10 +7,10 @@
     import PageSection from "$lib/components/PageSection.svelte";
     import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
     import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
-    import { rollDice } from "$lib/utils/diceRoller";
+    import { rollDice } from "$lib/utils/dice-roller";
     import { flip } from "svelte/animate";
     import { statblock } from "$lib/stores/statblock";
-    import { hitPointsColor } from "$lib/utils/hitPointsColor";
+    import { hitPointsColor } from "$lib/utils/hit-points-color";
     import PopupInput from "$lib/components/PopupInput.svelte";
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";

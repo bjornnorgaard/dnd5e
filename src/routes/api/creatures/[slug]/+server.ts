@@ -1,21 +1,14 @@
 import { error, json } from "@sveltejs/kit";
-import creatures from "../creatures.json";
-import type { Creature } from "$lib/types/creature";
+import { loadCreatures } from "$lib/utils/json-loaders";
 
 export const GET = ({ params }) => {
     const slug = params.slug;
 
-    const data: any = creatures;
-    if (!data.results) {
-        console.log("No monster data found");
-        return json([]);
-    }
-
-    const list: Creature[] = data?.results ?? [];
-    const res = list.find(m => m.slug === slug);
-    if (!res) {
+    const creatures = loadCreatures();
+    const creature = creatures.find(m => m.slug === slug);
+    if (!creature) {
         error(404, "Creature not found");
     }
 
-    return json(res);
+    return json(creature);
 }

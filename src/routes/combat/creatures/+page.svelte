@@ -3,7 +3,7 @@
     import { goto } from "$app/navigation";
     import { db } from "$lib/utils/database";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
-    import { newPlayer } from "$lib/utils/typeConstructors.js";
+    import { newPlayer } from "$lib/utils/type-constructors.js";
     import type { Creature } from "$lib/types/creature";
 
     async function create() {

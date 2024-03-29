@@ -1,9 +1,9 @@
 <script lang="ts">
     import CreatureStatAttribute from "$lib/components/CreatureStatAttribute.svelte";
-    import { appendSign } from "$lib/utils/positiveSign";
+    import { appendSign } from "$lib/utils/positive-sign";
     import StatblockSection from "$lib/components/StatblockSection.svelte";
     import StatblockDivider from "$lib/components/StatblockDivider.svelte";
-    import { fetchSpells } from "$lib/utils/fetchSpells";
+    import { fetchSpells } from "$lib/utils/fetch-spells";
     import { ProgressBar } from "@skeletonlabs/skeleton";
     import { statblock } from "$lib/stores/statblock";
     import { CircleX } from "lucide-svelte";
