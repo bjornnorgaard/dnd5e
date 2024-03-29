@@ -1,20 +1,17 @@
 <script lang="ts">
-    import { writable } from "svelte/store";
     import { createEventDispatcher, onMount } from "svelte";
     import type { Creature } from "$lib/types/creature";
     import SearchInput from "$lib/components/SearchInput.svelte";
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
-    import TableFoot from "$lib/components/TableFoot.svelte";
     import { routes } from "$lib/constants/routes";
 
     const dispatch = createEventDispatcher();
-    const creatures = writable<Creature[]>([]);
+    let creatures: Creature[] = []
 
     async function searchCreatures(query: string, take: number) {
-        const data = await fetch(routes.api_creatures(query, take)).then(r => r.json());
-        creatures.set(data);
+        creatures = await fetch(routes.api_creatures(query, take)).then(r => r.json());
     }
 
     function creatureClicked(creature: Creature) {
@@ -22,7 +19,7 @@
     }
 
     onMount(async () => {
-        await searchCreatures("", 10);
+        await searchCreatures("", 5);
     })
 </script>
 
@@ -39,7 +36,7 @@
             <th>Alignment</th>
         </TableHead>
         <TableBody>
-            {#each $creatures as m}
+            {#each creatures as m}
                 <tr on:click={() => creatureClicked(m)}>
                     <td>{m.challenge_rating}</td>
                     <td on:click|stopPropagation>
@@ -52,9 +49,5 @@
                 </tr>
             {/each}
         </TableBody>
-        <TableFoot>
-            <td colspan="5">Total results</td>
-            <td>{($creatures).length}</td>
-        </TableFoot>
     </Table>
 </div>

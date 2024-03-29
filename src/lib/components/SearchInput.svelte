@@ -5,10 +5,10 @@
     const dispatch = createEventDispatcher();
 
     export let label: string;
-    export let takeOptions: number[] = [ 10, 20, 50 ];
+    export let takeOptions: number[] = [ 5, 10, 20, 50 ];
 
     let query: string = "";
-    let take: number = 10;
+    let take: number = 5;
 
     function emitUpdate() {
         dispatch("change", { query: query, take: take });
