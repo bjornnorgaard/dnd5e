@@ -6,7 +6,7 @@
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
     import { Accordion, AccordionItem, ProgressBar } from "@skeletonlabs/skeleton";
-    import { ArrowLeftCircle, ArrowRightCircle, Dices, PlayCircle, Skull, StopCircle } from "lucide-svelte";
+    import { ArrowLeftCircle, ArrowRightCircle, Dices, FileWarning, PlayCircle, Skull, StopCircle } from "lucide-svelte";
     import { rollDice } from "$lib/utils/dice-roller";
     import { flip } from "svelte/animate";
     import { statblock } from "$lib/stores/statblock";
@@ -132,15 +132,25 @@
                 <ProgressBar value={undefined}/>
             {:else}
                 <div class="space-x-4">
-                    {#each $players as p}
-                        {@const included = e.creatureIds.includes(p.id)}
-                        <button class="chip"
-                                class:variant-filled-primary={included}
-                                class:variant-outline-primary={!included}
-                                on:click={() => togglePlayer(p.id)}>{p.name}</button>
-                    {/each}
-                    <button class="chip variant-outline-surface hover:variant-filled-success" on:click={async () => await addAllPlayersToEncounter(data.id)}>Everyone</button>
-                    <button class="chip variant-outline-surface hover:variant-filled-error" on:click={async () => await removeAllPlayersFromEncounter(data.id)}>None</button>
+                    {#if !$players.length}
+                        <aside class="alert variant-filled-error">
+                            <FileWarning/>
+                            <div class="">
+                                <p>Whoops. Seems you haven't created any player characters.</p>
+                                <p>Head back to the <a class="anchor" href={routes.combat()}>/combat</a> page to create some.</p>
+                            </div>
+                        </aside>
+                    {:else}
+                        {#each $players as p}
+                            {@const included = e.creatureIds.includes(p.id)}
+                            <button class="chip"
+                                    class:variant-filled-primary={included}
+                                    class:variant-outline-primary={!included}
+                                    on:click={() => togglePlayer(p.id)}>{p.name}</button>
+                        {/each}
+                        <button class="chip variant-outline-surface hover:variant-filled-success" on:click={async () => await addAllPlayersToEncounter(data.id)}>Everyone</button>
+                        <button class="chip variant-outline-surface hover:variant-filled-error" on:click={async () => await removeAllPlayersFromEncounter(data.id)}>None</button>
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -226,18 +236,21 @@
             <MonsterSearch on:select={e => addCreatureToEncounter(data.id, e.detail.slug)}/>
         </PageSection>
 
-        <PageSection>
+        <PageSection title="Danger Zone" desc="Ye' be forewarned, here be dragons - mind your step">
             <Accordion>
                 <AccordionItem>
                     <svelte:fragment slot="lead">
                         <Skull/>
                     </svelte:fragment>
-                    <svelte:fragment slot="summary">Danger Zone - Ye' be forewarned, here be dragons - mind your step</svelte:fragment>
+                    <svelte:fragment slot="summary">Reveal the red button</svelte:fragment>
                     <svelte:fragment slot="content">
-                        <button class="btn variant-filled-error" on:click={() => removeEncounter()}>Delete encounter</button>
+                        <div class="flex justify-center gap-4">
+                            <button class="btn-sm variant-filled-error" on:click={() => removeEncounter()}>Delete encounter</button>
+                        </div>
                     </svelte:fragment>
                 </AccordionItem>
             </Accordion>
         </PageSection>
+
     </PageWrapper>
 {/if}
