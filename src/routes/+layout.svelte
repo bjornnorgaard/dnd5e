@@ -9,15 +9,18 @@
     import { inject } from '@vercel/analytics'
     import { dev } from "$app/environment";
     import CreatureStatblock from "$lib/components/CreatureStatblock.svelte";
+    import GlobalSearch from "$lib/components/GlobalSearch.svelte";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
     inject({ mode: dev ? 'development' : 'production' });
 </script>
 
+<GlobalSearch/>
+
 <AppShell>
     <svelte:fragment slot="sidebarLeft">
-        <div class="h-screen hidden md:block">
+        <div class="hidden h-screen md:block">
             <NavSide/>
         </div>
     </svelte:fragment>

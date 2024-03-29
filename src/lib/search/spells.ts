@@ -6,12 +6,16 @@ let spells: Spell[] = [];
 let index = new FlexSearch.Index({ tokenize: "full" });
 let isBuilt = false;
 
+export function spellSearchString(c: Spell): `${string} ${string} ${string} ${string}` {
+    return `${c.name} ${c.school} ${c.dnd_class} ${c.material}`;
+}
+
 export function buildSpellIndex() {
     const start = performance.now();
 
     spells = loadSpells();
-    spells.forEach((c, i) => {
-        const searchString: string = `${c.name} ${c.school} ${c.dnd_class} ${c.material}`;
+    spells.forEach((s, i) => {
+        const searchString: string = spellSearchString(s);
         return index.add(i, searchString);
     });
 

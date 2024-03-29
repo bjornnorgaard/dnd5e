@@ -6,12 +6,16 @@ let creatures: Creature[] = [];
 let index = new FlexSearch.Index({ tokenize: "full" });
 let isBuilt = false;
 
+export function creatureSearchString(c: Creature): `${string} ${string} ${string} ${string}` {
+    return `${c.name} ${c.group} ${c.type} ${c.subtype} ${c.alignment} ${c.size}`;
+}
+
 export function buildCreatureIndex() {
     const start = performance.now();
 
     creatures = loadCreatures();
     creatures.forEach((c, i) => {
-        const searchString: string = `${c.name} ${c.group} ${c.type} ${c.subtype} ${c.alignment} ${c.size}`;
+        const searchString: string = creatureSearchString(c);
         return index.add(i, searchString);
     });
 

@@ -1,96 +1,89 @@
-<!--<script lang="ts">-->
+<script lang="ts">
+    import { Autocomplete, type AutocompleteOption } from "@skeletonlabs/skeleton";
+    import { goto } from "$app/navigation";
 
-<!--    import { Autocomplete, type AutocompleteOption } from "@skeletonlabs/skeleton";-->
-<!--    import type { Spell } from "$lib/types/spell";-->
-<!--    import { onMount } from "svelte";-->
-<!--    import { createSpellIndex, searchSpellIndex } from "$lib/search/search";-->
+    let query: string = "";
+    let dialog: HTMLDialogElement | null = null;
+    let results: AutocompleteOption<string>[] = [];
 
-<!--    let query: string = "";-->
-<!--    let dialog: HTMLDialogElement | null = null;-->
-<!--    let search: 'loading' | 'ready' = 'loading'-->
-<!--    let results: Spell[] = []-->
-<!--    let suggestions: AutocompleteOption<string>[] = [];-->
+    async function search() {
+        if (!query.length) return;
+        const res = await fetch(`/api/search?query=${query}`).then(r => r.json());
+        results = res.map((r: string) => ({ label: r, value: r }));
+    }
 
-<!--    onMount(async () => {-->
-<!--        // get the posts-->
-<!--        const res = await fetch('/api/spells');-->
-<!--        const posts = await res.json();-->
+    async function onWindowKeydown(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+            dialog?.close();
+        }
 
-<!--        // create search index-->
-<!--        createSpellIndex(posts)-->
-<!--        // we're in business 🤝-->
-<!--        search = 'ready'-->
-<!--    })-->
+        if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+            query = "";
+            dialog?.showModal();
+        }
+    }
 
-<!--    function runSearch() {-->
-<!--        console.log("searching", query)-->
+    async function onInputKeydown(event: KeyboardEvent) {
+        if (event.key !== "Enter") return;
+        if (!results.length) return;
+        dialog?.close();
+        await goto(results[0].value);
+    }
 
-<!--        if (search !== 'ready') {-->
-<!--            console.log("search not ready");-->
-<!--            return;-->
-<!--        }-->
+    async function onSelection(event: CustomEvent<AutocompleteOption<string>>) {
+        dialog?.close();
+        await goto(event.detail.value);
+    }
+</script>
 
-<!--        results = searchSpellIndex(query);-->
-<!--        console.log("results", results)-->
-<!--        suggestions = results.map((spell) => {-->
-<!--            return {-->
-<!--                label: spell.name,-->
-<!--                value: spell.name,-->
-<!--            }-->
-<!--        })-->
-<!--    }-->
+<svelte:window on:keydown={onWindowKeydown}/>
 
-<!--    function onKeydown(event: KeyboardEvent) {-->
-<!--        if (event.key === "Escape") {-->
-<!--            dialog?.close();-->
-<!--        }-->
+<dialog bind:this={dialog} class="bg-transparent">
+    <div class="fixed top-0 left-0 h-screen w-screen opacity-80 bg-surface-800"></div>
 
-<!--        if ((event.ctrlKey || event.metaKey) && event.key === "k") {-->
-<!--            query = "";-->
-<!--            dialog?.showModal();-->
-<!--        }-->
+    <div class="fixed top-0 left-0 h-screen w-screen p-4">
+        <div class="mx-auto w-full max-w-xl rounded-2xl mt-[10vw] space-y-4 card variant-filled-surface">
 
-<!--        if (event.key === "Enter") {-->
-<!--            dialog?.close();-->
-<!--        }-->
-<!--    }-->
+            <input type="search" placeholder="Search everything" bind:value={query} on:keydown={onInputKeydown} on:input={search} class="rounded-t-2xl rounded-b-none border-0 px-4 pt-3 text-4xl text-neutral-300 input">
 
-<!--    function onFlavorSelection(event: CustomEvent<AutocompleteOption<string>>): void {-->
-<!--        console.log("selection", event.detail.value)-->
-<!--    }-->
+            <Autocomplete bind:input={query} options={results} on:selection={onSelection}/>
 
-<!--</script>-->
+            <div class="flex gap-4 p-4 text-sm">
+                <span><kbd class="kbd">Escape</kbd> to close</span>
+                <span><kbd class="kbd">Tab</kbd> to navigate</span>
+                <span><kbd class="kbd">Enter</kbd> to select</span>
+            </div>
+        </div>
+    </div>
 
-<!--<svelte:window on:keydown={onKeydown}/>-->
+    <!--    <div class="z-10 flex flex-col card variant-filled-surface">-->
+    <!--        <div class="">-->
+    <!--            <input class="border-0 text-4xl input"-->
+    <!--                   type="search"-->
+    <!--                   on:keyup={() => runSearch()}-->
+    <!--                   autocomplete="off"-->
+    <!--                   spellcheck="false"-->
+    <!--                   bind:value={query}-->
+    <!--                   placeholder="Search everything and everywhere"/>-->
+    <!--        </div>-->
+    <!--        <div tabindex="-1">-->
+    <!--            <Autocomplete options={results} on:selection={onSelection} bind:input={query}/>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--        <div class="grid place-content-center">-->
+    <!--            <br>-->
+    <!--            <div class="overflow-y-auto text-4xl" tabindex="-1">-->
+    <!--                <Autocomplete bind:input={query} options={suggestions} on:selection={onFlavorSelection}/>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    <div class="fixed top-0 left-0 h-screen w-screen">asdf</div>-->
 
-<!--<dialog bind:this={dialog} class="bg-transparent">-->
-<!--    <div class="fixed top-0 left-0 h-screen w-screen blur-2xl"></div>-->
-
-<!--    <div class="flex flex-col gap-4 card variant-filled-surface">-->
-<!--        <input class="w-full text-3xl input"-->
-<!--               type="search"-->
-<!--               name="demo"-->
-<!--               on:input={() => runSearch()}-->
-<!--               autocomplete="off"-->
-<!--               bind:value={query}-->
-<!--               placeholder="Search..."/>-->
-
-<!--        <Autocomplete options={suggestions} on:selection={onFlavorSelection} bind:input={query}/>-->
-<!--    </div>-->
-<!--    &lt;!&ndash;        <div class="grid place-content-center">&ndash;&gt;-->
-<!--    &lt;!&ndash;            <br>&ndash;&gt;-->
-<!--    &lt;!&ndash;            <div class="overflow-y-auto text-4xl" tabindex="-1">&ndash;&gt;-->
-<!--    &lt;!&ndash;                <Autocomplete bind:input={query} options={suggestions} on:selection={onFlavorSelection}/>&ndash;&gt;-->
-<!--    &lt;!&ndash;            </div>&ndash;&gt;-->
-<!--    &lt;!&ndash;        </div>&ndash;&gt;-->
-<!--    &lt;!&ndash;    <div class="fixed top-0 left-0 h-screen w-screen">asdf</div>&ndash;&gt;-->
-
-<!--    &lt;!&ndash;    <div class="grid place-content-center">&ndash;&gt;-->
-<!--    &lt;!&ndash;        <div class="">&ndash;&gt;-->
-<!--    &lt;!&ndash;            <input type="search" class="text-6xl input" placeholder="Search for anything" bind:value={query}>&ndash;&gt;-->
-<!--    &lt;!&ndash;            {#each suggestions as s}&ndash;&gt;-->
-<!--    &lt;!&ndash;                <p>{s}</p>&ndash;&gt;-->
-<!--    &lt;!&ndash;            {/each}&ndash;&gt;-->
-<!--    &lt;!&ndash;        </div>&ndash;&gt;-->
-<!--    &lt;!&ndash;    </div>&ndash;&gt;-->
-<!--</dialog>-->
+    <!--    <div class="grid place-content-center">-->
+    <!--        <div class="">-->
+    <!--            <input type="search" class="text-6xl input" placeholder="Search for anything" bind:value={query}>-->
+    <!--            {#each suggestions as s}-->
+    <!--                <p>{s}</p>-->
+    <!--            {/each}-->
+    <!--        </div>-->
+    <!--    </div>-->
+</dialog>
