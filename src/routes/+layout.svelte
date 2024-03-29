@@ -8,8 +8,12 @@
     import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
     import { slide } from "svelte/transition";
     import NavBottom from "$lib/components/NavBottom.svelte";
+    import { inject } from '@vercel/analytics'
+    import { dev } from "$app/environment";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
+
+    inject({ mode: dev ? 'development' : 'production' });
 </script>
 
 <AppShell>
