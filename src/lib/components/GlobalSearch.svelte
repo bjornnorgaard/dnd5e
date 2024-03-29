@@ -1,10 +1,13 @@
 <script lang="ts">
     import { Autocomplete, type AutocompleteOption } from "@skeletonlabs/skeleton";
     import { goto } from "$app/navigation";
+    import { onMount } from "svelte";
 
     let query: string = "";
     let dialog: HTMLDialogElement | null = null;
     let results: AutocompleteOption<string>[] = [];
+
+    onMount(() => document.addEventListener("click", () => dialog?.close()));
 
     async function search() {
         if (!query.length) return;
@@ -40,14 +43,10 @@
 
 <dialog bind:this={dialog} class="bg-transparent">
     <div class="fixed top-0 left-0 h-screen w-screen opacity-80 bg-surface-800"></div>
-
     <div class="fixed top-0 left-0 h-screen w-screen p-4">
         <div class="mx-auto w-full max-w-xl rounded-2xl mt-[10vw] space-y-4 card variant-filled-surface">
-
             <input type="search" placeholder="Search everything" bind:value={query} on:keydown={onInputKeydown} on:input={search} class="rounded-t-2xl rounded-b-none border-0 px-4 pt-3 text-4xl text-neutral-300 input">
-
             <Autocomplete bind:input={query} options={results} on:selection={onSelection}/>
-
             <div class="flex gap-4 p-4 text-sm">
                 <span><kbd class="kbd">Escape</kbd> to close</span>
                 <span><kbd class="kbd">Tab</kbd> to navigate</span>
@@ -55,35 +54,4 @@
             </div>
         </div>
     </div>
-
-    <!--    <div class="z-10 flex flex-col card variant-filled-surface">-->
-    <!--        <div class="">-->
-    <!--            <input class="border-0 text-4xl input"-->
-    <!--                   type="search"-->
-    <!--                   on:keyup={() => runSearch()}-->
-    <!--                   autocomplete="off"-->
-    <!--                   spellcheck="false"-->
-    <!--                   bind:value={query}-->
-    <!--                   placeholder="Search everything and everywhere"/>-->
-    <!--        </div>-->
-    <!--        <div tabindex="-1">-->
-    <!--            <Autocomplete options={results} on:selection={onSelection} bind:input={query}/>-->
-    <!--        </div>-->
-    <!--    </div>-->
-    <!--        <div class="grid place-content-center">-->
-    <!--            <br>-->
-    <!--            <div class="overflow-y-auto text-4xl" tabindex="-1">-->
-    <!--                <Autocomplete bind:input={query} options={suggestions} on:selection={onFlavorSelection}/>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    <div class="fixed top-0 left-0 h-screen w-screen">asdf</div>-->
-
-    <!--    <div class="grid place-content-center">-->
-    <!--        <div class="">-->
-    <!--            <input type="search" class="text-6xl input" placeholder="Search for anything" bind:value={query}>-->
-    <!--            {#each suggestions as s}-->
-    <!--                <p>{s}</p>-->
-    <!--            {/each}-->
-    <!--        </div>-->
-    <!--    </div>-->
 </dialog>
