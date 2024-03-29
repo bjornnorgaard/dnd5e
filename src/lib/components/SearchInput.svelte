@@ -21,7 +21,7 @@
         <span>Number of Results</span>
     </span>
     <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-        <div class="input-group-shim flex gap-2">
+        <div class="flex gap-2 input-group-shim">
             <Search/>
         </div>
 

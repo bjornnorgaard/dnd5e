@@ -12,10 +12,10 @@
     let spells: Spell[] = [];
 
     onMount(async () => {
-        await searchSpells("", 10);
+        await searchSpells();
     });
 
-    async function searchSpells(query: string, take: number) {
+    async function searchSpells(query: string = "", take: number = 0) {
         spells = await fetch(routes.api_spells(query, take)).then(async r => await r.json());
     }
 </script>

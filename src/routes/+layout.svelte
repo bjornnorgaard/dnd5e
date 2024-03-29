@@ -17,7 +17,7 @@
 
 <AppShell>
     <svelte:fragment slot="sidebarLeft">
-        <div class="hidden md:block">
+        <div class="h-screen hidden md:block">
             <NavSide/>
         </div>
     </svelte:fragment>

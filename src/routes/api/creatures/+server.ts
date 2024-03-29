@@ -27,7 +27,7 @@ function searchCreatures(query: string, limit: number): any[] {
 export const GET = ({ url }) => {
     let limit = Number(url.searchParams.get("limit"));
     if (!limit) {
-        limit = 10;
+        limit = 5;
     }
 
     if (!isBuilt) {

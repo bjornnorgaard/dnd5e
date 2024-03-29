@@ -12,10 +12,10 @@
     let creatures: Creature[] = [];
 
     onMount(async () => {
-        await searchCreatures("", 10);
+        await searchCreatures();
     });
 
-    async function searchCreatures(query: string, take: number) {
+    async function searchCreatures(query: string = "", take: number = 0) {
         creatures = await fetch(routes.api_creatures(query, take)).then(async r => await r.json());
     }
 </script>
