@@ -15,6 +15,7 @@
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
+    import { routes } from "$lib/constants/routes";
 
     export let data;
     const encounter = liveQuery(() => db.encounters.get(data.id));
@@ -38,7 +39,7 @@
     }
 
     async function editCreature(id: string) {
-        await goto(`/combat/creatures/${id}`);
+        await goto(routes.combat_creature(id));
     }
 
     async function togglePlayer(id: string) {
@@ -57,7 +58,7 @@
 
     async function removeEncounter() {
         await deleteEncounter(data.id);
-        await goto("/combat/encounters");
+        await goto(routes.combat());
     }
 
     function startTrigger() {
@@ -172,7 +173,9 @@
                                     </td>
                                 {/if}
 
-                                <td class="text-start">{p.name}</td>
+                                <td class="text-start" >
+                                    <a class="anchor" on:click|stopPropagation href={routes.combat_creature(p.id)}>{p.name}</a>
+                                </td>
 
                                 <td class="text-center"
                                     class:text-warning-500={hitPointsColor(p, 0.25,0.50)}
@@ -185,7 +188,6 @@
                                 <td class="text-center">{p.armor_class}</td>
 
                                 <td class="text-end">
-                                    <button class="rounded px-2 text-surface-500 hover:variant-filled-secondary" on:click|stopPropagation={() => editCreature(p.id)}>edit</button>
                                     <button class="rounded px-2 text-surface-500 hover:variant-filled-error" on:click|stopPropagation={() => removeCreatureFromEncounter(data.id, p.id)}>remove</button>
                                 </td>
                             </tr>
