@@ -46,7 +46,7 @@
     <div class="fixed top-0 left-0 h-screen w-screen p-4">
         <div class="mx-auto w-full max-w-xl rounded-2xl mt-[10vw] space-y-4 card variant-filled-surface">
             <input type="search" placeholder="Search everything" bind:value={query} on:keydown={onInputKeydown} on:input={search} class="rounded-t-2xl rounded-b-none border-0 px-4 pt-3 text-4xl text-neutral-300 input">
-            <Autocomplete bind:input={query} options={results} on:selection={onSelection}/>
+            <Autocomplete options={results} on:selection={onSelection}/>
             <div class="flex gap-4 p-4 text-sm">
                 <span><kbd class="kbd">Escape</kbd> to close</span>
                 <span><kbd class="kbd">Tab</kbd> to navigate</span>
