@@ -4,8 +4,10 @@
     import PageSection from "$lib/components/PageSection.svelte";
     import { goto } from "$app/navigation";
 
+    import { routes } from "$lib/constants/routes";
+
     async function onCreatureSelect(e: CustomEvent) {
-        await goto("/beasts/" + e.detail.slug);
+        await goto(routes.api_creature_slug(e.detail.slug));
     }
 </script>
 

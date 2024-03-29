@@ -7,6 +7,7 @@
     import Table from "$lib/components/Table.svelte";
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
+    import { routes } from "$lib/constants/routes";
 
     let spells: Spell[] = [];
 
@@ -15,7 +16,7 @@
     });
 
     async function searchSpells(query: string, take: number) {
-        spells = await fetch(`/api/spells?query=${query}&take=${take}`).then(async r => await r.json());
+        spells = await fetch(routes.api_spells(query, take)).then(async r => await r.json());
     }
 </script>
 
@@ -36,7 +37,7 @@
                     <tr>
                         <td class="table-cell-fit">{s.spell_level}</td>
                         <td class="anchor">
-                            <a href={`/spells/${s.slug}`}>
+                            <a href={routes.spells_slug(s.slug)}>
                                 {s.name}
                             </a>
                         </td>

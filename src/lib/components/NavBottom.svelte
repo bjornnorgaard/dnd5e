@@ -1,7 +1,7 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { TabAnchor, TabGroup } from "@skeletonlabs/skeleton";
-    import { routes } from "$lib/constants/routes";
+    import { navRoute } from "$lib/constants/navigation";
 </script>
 
 <TabGroup
@@ -12,7 +12,7 @@
         rounded=""
         border="border-t-2 border-primary-500"
         class="bg-surface-100-800-token w-full">
-    {#each routes as r}
+    {#each navRoute as r}
         <TabAnchor href={r.route} selected={$page.url.pathname.includes(r.route) && r.route !== "/"}>
             <svelte:fragment slot="lead">
                 <div class="flex justify-center">

@@ -1,15 +1,21 @@
-import { BookHeart, Home, Library, Rabbit, Swords } from "lucide-svelte";
+export const routes = {
+    home: () => "/",
 
-export interface Route {
-    label: string;
-    route: string;
-    icon: any;
+    api_creatures: (query: string = "", limit: number = 5) => "/api/creatures",
+    api_creature_slug: (slug: string) => `/api/creatures/${slug}`,
+    api_spells: (query: string = "", limit: number = 5) => "/api/spells",
+    api_spells_slug: (slug: string) => `/api/spells/${slug}`,
+
+    combat: () => "/combat",
+    combat_encounter: (id: string) => `/combat/encounters/${id}`,
+    combat_creature: (id: string) => `/combat/creatures/${id}`,
+
+    beasts: () => "/beasts",
+    beasts_slug: (slug: string) => `/beasts/${slug}`,
+
+    spells: () => "/spells",
+    spells_slug: (slug: string) => `/spells/${slug}`,
+
+    characters: () => "/characters",
+    characters_slug: (slug: string) => `/characters/${slug}`,
 }
-
-export const routes: Route[] = [
-    { label: "Home", route: "/", icon: Home },
-    { label: "Combat", route: "/combat", icon: Swords },
-    { label: "Beasts", route: "/beasts", icon: Rabbit },
-    { label: "Spells", route: "/spells", icon: Library },
-    { label: "Sheet", route: "/characters", icon: BookHeart },
-];

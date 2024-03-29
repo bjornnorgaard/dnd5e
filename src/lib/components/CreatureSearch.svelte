@@ -7,12 +7,13 @@
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
     import TableFoot from "$lib/components/TableFoot.svelte";
+    import { routes } from "$lib/constants/routes";
 
     const dispatch = createEventDispatcher();
     const creatures = writable<Creature[]>([]);
 
     async function searchCreatures(query: string, take: number) {
-        const data = await fetch(`/api/creatures?query=${query}&take=${take}`).then(r => r.json());
+        const data = await fetch(routes.api_creatures(query, take)).then(r => r.json());
         creatures.set(data);
     }
 
@@ -42,7 +43,7 @@
                 <tr on:click={() => creatureClicked(m)}>
                     <td>{m.challenge_rating}</td>
                     <td class="anchor" on:click|stopPropagation>
-                        <a href={`/beasts/${m.slug}`}>{m.name}</a>
+                        <a href={routes.beasts_slug(m.slug)}>{m.name}</a>
                     </td>
                     <td>{m.armor_class}</td>
                     <td>{m.type}</td>
