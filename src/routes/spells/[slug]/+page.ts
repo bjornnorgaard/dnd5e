@@ -7,9 +7,7 @@ export const load = async ({ params, fetch }) => {
         error(400, "No slug provided");
     }
 
-    const res = await fetch(routes.api_spells_slug(params.slug));
-    const spell = await res.json();
-
+    const spell = await fetch(routes.api_spells_slug(params.slug)).then(r => r.json());
     if (!spell) {
         error(404, "Spell not found");
     }

@@ -39,21 +39,13 @@
             <TableBody>
                 {#if $encounters}
                     {#each $encounters as e}
-                        <tr on:click={async () => await goto(routes.combat_encounter(e.id))} class="cursor-pointer">
-                            <td>{e.title}</td>
+                        <tr>
+                            <td><a class="anchor" href={routes.combat_encounter(e.id)}>{e.title}</a></td>
                             <td>{e.creatureIds.length}</td>
                         </tr>
                     {/each}
                 {/if}
             </TableBody>
-            <TableFoot>
-                {#if $encounters}
-                    <td class="space-x-2">
-                        <span>Total Encounters</span>
-                        <span class="badge variant-filled-surface">{$encounters.length}</span>
-                    </td>
-                {/if}
-            </TableFoot>
         </Table>
         <div>
             <button on:click={async () => await createEncounter()} class="btn variant-filled-primary">New Encounter</button>
@@ -71,8 +63,8 @@
             <TableBody>
                 {#if $players}
                     {#each $players as p}
-                        <tr on:click={async () => await goto(routes.combat_creature(p.id))} class="cursor-pointer">
-                            <td>{p.name}</td>
+                        <tr>
+                            <td><a class="anchor" href={routes.combat_creature(p.id)}>{p.name}</a></td>
                             <td>{p.current_hit_points}/{p.hit_points}</td>
                             <td>{p.armor_class}</td>
                             <td>{p.dexterity}</td>
@@ -80,16 +72,6 @@
                     {/each}
                 {/if}
             </TableBody>
-            <TableFoot>
-                {#if $players}
-                    <tr class="font-bold">
-                        <td class="space-x-2">
-                            <span>Total Players</span>
-                            <span class="badge variant-filled-surface">{$players.length}</span>
-                        </td>
-                    </tr>
-                {/if}
-            </TableFoot>
         </Table>
         <div>
             <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>

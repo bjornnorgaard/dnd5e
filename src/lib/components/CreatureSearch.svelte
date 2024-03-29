@@ -42,8 +42,8 @@
             {#each $creatures as m}
                 <tr on:click={() => creatureClicked(m)}>
                     <td>{m.challenge_rating}</td>
-                    <td class="anchor" on:click|stopPropagation>
-                        <a href={routes.beasts_slug(m.slug)}>{m.name}</a>
+                    <td on:click|stopPropagation>
+                        <a class="anchor" href={routes.beasts_slug(m.slug)}>{m.name}</a>
                     </td>
                     <td>{m.armor_class}</td>
                     <td>{m.type}</td>
