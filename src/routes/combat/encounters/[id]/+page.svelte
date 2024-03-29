@@ -173,7 +173,7 @@
                                     </td>
                                 {/if}
 
-                                <td class="text-start" >
+                                <td class="text-start">
                                     <a class="anchor" on:click|stopPropagation href={routes.combat_creature(p.id)}>{p.name}</a>
                                 </td>
 
@@ -195,26 +195,26 @@
                     {/if}
                 </TableBody>
             </Table>
-            <div class="flex gap-4">
+            <div class="flex flex-wrap gap-4">
                 {#if activeCombatant === null}
-                    <button on:click={() => startTrigger()} class="btn variant-filled-surface space-x-2">
+                    <button on:click={() => startTrigger()} class="btn btn-sm variant-filled-surface space-x-2">
                         <span>Start</span>
                         <PlayCircle/>
                     </button>
                 {:else}
-                    <button on:click={() => stopTrigger()} class="btn variant-filled-error space-x-2">
+                    <button on:click={() => stopTrigger()} class="btn btn-sm variant-filled-error space-x-2">
                         <span>Stop</span>
                         <StopCircle/>
                     </button>
-                    <button on:click={() => previousTrigger()} class="btn variant-filled-primary space-x-2" disabled={activeCombatant === null}>
+                    <button on:click={() => previousTrigger()} class="btn btn-sm variant-filled-primary space-x-2" disabled={activeCombatant === null}>
                         <ArrowLeftCircle/>
                         <span>Previous</span>
                     </button>
-                    <button on:click={() => nextTrigger()} class="btn variant-filled-primary space-x-2" disabled={activeCombatant === null}>
+                    <button on:click={() => nextTrigger()} class="btn btn-sm variant-filled-primary space-x-2" disabled={activeCombatant === null}>
                         <span>Next</span>
                         <ArrowRightCircle/>
                     </button>
-                    <button on:click={() => rollInitiative()} class="btn variant-outline-surface space-x-2" disabled={activeCombatant === null}>
+                    <button on:click={() => rollInitiative()} class="btn btn-sm variant-outline-surface space-x-2" disabled={activeCombatant === null}>
                         <span>Re-roll initiative</span>
                         <Dices/>
                     </button>
