@@ -8,7 +8,7 @@
     export let takeOptions: number[] = [ 5, 10, 20, 50 ];
 
     let query: string = "";
-    let take: number = 5;
+    let take: number = 10;
 
     function emitUpdate() {
         dispatch("change", { query: query, take: take });

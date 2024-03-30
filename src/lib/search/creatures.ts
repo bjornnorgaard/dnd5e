@@ -24,6 +24,7 @@ export function buildCreatureIndex() {
 
 export function searchCreatures(query: string, limit: number = 5, offset: number = 0): Creature[] {
     const options: any = { limit: limit, offset: offset, suggest: true };
+    if (!query.length) return creatures.slice(offset, offset + limit);
     let results = creatureIndex.search(query, options);
     return results.map(r => creatures[r as number]);
 }

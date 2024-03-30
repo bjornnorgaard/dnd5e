@@ -24,6 +24,7 @@ export function buildSpellIndex() {
 
 export function searchSpells(query: string, limit: number = 5, offset: number = 0): Spell[] {
     const options: any = { limit: limit, offset: offset, suggest: true };
+    if (!query.length) return spells.slice(offset, offset + limit);
     let results = spellIndex.search(query, options);
     return results.map(r => spells[r as number]);
 }

@@ -15,8 +15,8 @@
         await searchSpells();
     });
 
-    async function searchSpells(query: string = "", take: number = 0) {
-        spells = await fetch(routes.api_spells(query, take)).then(async r => await r.json());
+    async function searchSpells(query: string = "", take: number = 10) {
+        spells = await fetch(routes.api_spells(query, take)).then(r => r.json());
     }
 </script>
 

@@ -15,8 +15,8 @@
         await searchCreatures();
     });
 
-    async function searchCreatures(query: string = "", take: number = 0) {
-        creatures = await fetch(routes.api_creatures(query, take)).then(async r => await r.json());
+    async function searchCreatures(query: string = "", take: number = 10) {
+        creatures = await fetch(routes.api_creatures(query, take)).then(r => r.json());
     }
 </script>
 
