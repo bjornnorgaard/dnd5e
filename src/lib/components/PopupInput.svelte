@@ -8,6 +8,12 @@
     export let label: string;
     export let help: string = "";
 
+    const settings = {
+        event: 'click',
+        target: label + id,
+        placement: 'top',
+    };
+
     function emitKeydown(e: KeyboardEvent) {
         if (e.key !== "Enter") {
             return;
@@ -49,6 +55,6 @@
 
 <button class="rounded px-2 hover:variant-filled-primary"
         on:click|stopPropagation={() => onElementClicked(label+id)}
-        use:popup={{ event: 'click', target: label+id, placement: 'top'}}>
+        use:popup={settings}>
     <slot/>
 </button>
