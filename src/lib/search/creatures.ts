@@ -1,33 +1,29 @@
 import FlexSearch from "flexsearch";
 import type { Creature } from "$lib/types/creature";
-import { loadCreatures } from "$lib/utils/json-loaders";
+import { indexOptions } from "$lib/search/constants";
+import { routes } from "$lib/constants/routes";
+import { creatureIndex, creatures, siteIndex } from "../../hooks.server";
 
-let creatures: Creature[] = [];
-let index = new FlexSearch.Index({ tokenize: "full" });
-let isBuilt = false;
-
-export function creatureSearchString(c: Creature): `${string} ${string} ${string} ${string}` {
-    return `${c.name} ${c.group} ${c.type} ${c.subtype} ${c.alignment} ${c.size}`;
+export function creatureSearchString(c: Creature): string {
+    return `${c.name} ${c.group} ${c.type} ${c.subtype}`;
 }
 
 export function buildCreatureIndex() {
     const start = performance.now();
-
-    creatures = loadCreatures();
+    const flexIndex = new FlexSearch.Index(indexOptions);
     creatures.forEach((c, i) => {
         const searchString: string = creatureSearchString(c);
-        return index.add(i, searchString);
+        siteIndex.add(routes.beasts_slug(c.slug), `beast creature ${searchString}`);
+        return flexIndex.add(i, searchString);
     });
 
     const end = performance.now();
-    console.log(`Built creature index in ${end - start}ms`);
+    console.log(`Built creature index in ${end - start} ms`);
+    return flexIndex;
 }
 
-export function searchCreatures(query: string, limit: number): Creature[] {
-    if (!isBuilt) {
-        buildCreatureIndex();
-        isBuilt = true;
-    }
-
-    return index.search(query, limit).map(r => creatures[r as number]);
+export function searchCreatures(query: string, limit: number = 5, offset: number = 0): Creature[] {
+    const options: any = { limit: limit, offset: offset, suggest: true };
+    let results = creatureIndex.search(query, options);
+    return results.map(r => creatures[r as number]);
 }

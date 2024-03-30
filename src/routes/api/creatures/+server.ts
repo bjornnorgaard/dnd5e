@@ -3,16 +3,10 @@ import { json } from "@sveltejs/kit";
 import { searchCreatures } from "$lib/search/creatures";
 
 export const GET = ({ url }) => {
-    let limit = Number(url.searchParams.get("limit"));
-    if (!limit) {
-        limit = 5;
-    }
+    const query = url.searchParams.get("query") ?? "a";
+    const limit = Number(url.searchParams.get("limit")) ?? 5;
+    const offset = Number(url.searchParams.get("offset")) ?? 0;
 
-    let query: string = url.searchParams.get("query") ?? "";
-    if (!query.length) {
-        query = "a";
-    }
-
-    const results: Creature[] = searchCreatures(query, limit);
+    const results: Creature[] = searchCreatures(query, limit, offset);
     return json(results);
 }
