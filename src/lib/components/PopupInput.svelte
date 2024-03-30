@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from "svelte";
-    import { popup } from "@skeletonlabs/skeleton";
+    import { popup, type PopupSettings } from "@skeletonlabs/skeleton";
 
     const dispatch = createEventDispatcher();
 
@@ -8,7 +8,7 @@
     export let label: string;
     export let help: string = "";
 
-    const settings = {
+    const settings: PopupSettings = {
         event: 'click',
         target: label + id,
         placement: 'top',
@@ -43,7 +43,7 @@
 <div class="w-60 rounded bg-gradient-to-b p-4 text-start text-neutral-50 card from-surface-600 to-surface-600"
      data-popup={label+id}>
 
-    <label for="damage" class="label">
+    <label for="damage" class="label flex flex-col">
         <span>{label}</span>
         <input type="number" class="input" id={label+id} on:keydown={emitKeydown}>
         {#if help}

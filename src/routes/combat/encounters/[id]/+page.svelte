@@ -207,12 +207,12 @@
             </Table>
             <div class="flex flex-wrap gap-4">
                 {#if activeCombatant === null}
-                    <button on:click={() => startTrigger()} class="btn btn-sm variant-filled-surface space-x-2">
+                    <button on:click={() => startTrigger()} class="btn btn-sm variant-filled-primary space-x-2">
                         <span>Start</span>
                         <PlayCircle/>
                     </button>
                 {:else}
-                    <button on:click={() => stopTrigger()} class="btn btn-sm variant-filled-error space-x-2">
+                    <button on:click={() => stopTrigger()} class="btn btn-sm variant-soft-surface space-x-2">
                         <span>Stop</span>
                         <StopCircle/>
                     </button>
@@ -224,7 +224,7 @@
                         <span>Next</span>
                         <ArrowRightCircle/>
                     </button>
-                    <button on:click={() => rollInitiative()} class="btn btn-sm variant-outline-surface space-x-2" disabled={activeCombatant === null}>
+                    <button on:click={() => rollInitiative()} class="btn btn-sm variant-soft-surface space-x-2" disabled={activeCombatant === null}>
                         <span>Re-roll initiative</span>
                         <Dices/>
                     </button>
