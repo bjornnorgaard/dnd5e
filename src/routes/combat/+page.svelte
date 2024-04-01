@@ -29,28 +29,6 @@
 </script>
 
 <PageWrapper title="Combat" desc="Create encounters and use initiative tracker">
-    <PageSection title="Encounters" desc="Encounters are a collection of monsters and players">
-        <Table>
-            <TableHead>
-                <th>Encounter</th>
-                <th>Creatures</th>
-            </TableHead>
-            <TableBody>
-                {#if $encounters}
-                    {#each $encounters as e}
-                        <tr>
-                            <td><a class="anchor" href={routes.combat_encounter(e.id)}>{e.title}</a></td>
-                            <td>{e.creatureIds.length}</td>
-                        </tr>
-                    {/each}
-                {/if}
-            </TableBody>
-        </Table>
-        <div>
-            <button on:click={async () => await createEncounter()} class="btn variant-filled-primary">New Encounter</button>
-        </div>
-    </PageSection>
-
     <PageSection title="Players" desc="Players are characters that can be added to encounters">
         <Table>
             <TableHead>
@@ -76,5 +54,25 @@
             <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>
         </div>
     </PageSection>
-
+    <PageSection title="Encounters" desc="Encounters are a collection of monsters and players">
+        <Table>
+            <TableHead>
+                <th>Encounter</th>
+                <th>Creatures</th>
+            </TableHead>
+            <TableBody>
+                {#if $encounters}
+                    {#each $encounters as e}
+                        <tr>
+                            <td><a class="anchor" href={routes.combat_encounter(e.id)}>{e.title}</a></td>
+                            <td>{e.creatureIds.length}</td>
+                        </tr>
+                    {/each}
+                {/if}
+            </TableBody>
+        </Table>
+        <div>
+            <button on:click={async () => await createEncounter()} class="btn variant-filled-primary">New Encounter</button>
+        </div>
+    </PageSection>
 </PageWrapper>
