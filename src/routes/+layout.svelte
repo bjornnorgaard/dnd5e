@@ -10,11 +10,14 @@
     import { dev } from "$app/environment";
     import CreatureStatblock from "$lib/components/CreatureStatblock.svelte";
     import GlobalSearch from "$lib/components/GlobalSearch.svelte";
+    import OpenGraph from "$lib/components/OpenGraph.svelte";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
     inject({ mode: dev ? 'development' : 'production' });
 </script>
+
+<OpenGraph/>
 
 <GlobalSearch/>
 
