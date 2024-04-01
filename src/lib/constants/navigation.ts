@@ -8,7 +8,7 @@ export interface NavRoute {
 }
 
 export const navRoute: NavRoute[] = [
-    { label: "Home", route: routes.home(), icon: Home },
+    // { label: "Home", route: routes.home(), icon: Home },
     { label: "Combat", route: routes.combat(), icon: Swords },
     { label: "Beasts", route: routes.beasts(), icon: Rabbit },
     { label: "Spells", route: routes.spells(), icon: Library },
