@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { page } from "$app/stores";
+
     const name = "D&D by Bear";
     const rootUrl = "https://dnd.bybear.dk"
     const author = "Bjørn Nørgaard";
@@ -15,7 +17,7 @@
 
 <svelte:head>
     <title>{title}</title>
-    <link rel="canonical" href={url}>
+    <link rel="canonical" href={url+$page.route.id}>
 
     <meta name="description" content={description}>
     <meta name="author" content={author}>
