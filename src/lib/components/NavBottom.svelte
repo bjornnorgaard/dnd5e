@@ -10,7 +10,7 @@
         hover="hover:variant-soft-primary"
         flex="flex-1"
         rounded=""
-        border="border-t-2 border-primary-500"
+        border="border-t-2 border-surface-900"
         class="w-full bg-surface-100-800-token">
     <!--    <TabAnchor>-->
     <!--        <NavSearchButton/>-->
