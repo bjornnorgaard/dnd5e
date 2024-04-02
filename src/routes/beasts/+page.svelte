@@ -8,21 +8,36 @@
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
     import { routes } from "$lib/constants/routes";
+    import PageSettings from "$lib/components/PageSettings.svelte";
 
     let creatures: Creature[] = [];
+    let query = "";
+    let limit = 10;
+    let offset = 0;
 
-    onMount(async () => {
+    onMount(async () => await searchCreatures());
+
+    async function searchCreatures() {
+        creatures = await fetch(routes.api_creatures(query, limit, offset)).then(r => r.json());
+    }
+
+    async function onQueryUpdated(q: string) {
+        query = q;
+        offset = 0;
         await searchCreatures();
-    });
+    }
 
-    async function searchCreatures(query: string = "", take: number = 10) {
-        creatures = await fetch(routes.api_creatures(query, take)).then(r => r.json());
+    async function onPageUpdated(e: CustomEvent) {
+        offset = e.detail.offset;
+        limit = e.detail.limit;
+        await searchCreatures();
     }
 </script>
 
 <PageWrapper title="Creatures" desc="Search and view creatures">
     <PageSection>
-        <SearchInput label="Search Creatures" on:change={async (e) => await searchCreatures(e.detail.query, e.detail.take)}/>
+        <SearchInput label="Search Creatures" on:input={async (e) => await onQueryUpdated(e.detail)}/>
+        <PageSettings on:update={onPageUpdated} bind:count={creatures.length}/>
         <Table>
             <TableHead>
                 <th>CR</th>

@@ -8,21 +8,38 @@
     import TableHead from "$lib/components/TableHead.svelte";
     import TableBody from "$lib/components/TableBody.svelte";
     import { routes } from "$lib/constants/routes";
+    import PageSettings from "$lib/components/PageSettings.svelte";
+    import { DEFAULT_PAGE_SIZE } from "$lib/constants/paging";
 
+    let query = "";
+    let offset = 0;
+    let limit = DEFAULT_PAGE_SIZE;
     let spells: Spell[] = [];
 
-    onMount(async () => {
-        await searchSpells();
-    });
+    onMount(async () => await searchSpells());
 
-    async function searchSpells(query: string = "", take: number = 10) {
-        spells = await fetch(routes.api_spells(query, take)).then(r => r.json());
+    async function searchSpells() {
+        query = query.trim();
+        spells = await fetch(routes.api_spells(query, limit, offset)).then(r => r.json());
+    }
+
+    async function onQueryUpdated(q: string) {
+        query = q;
+        offset = 0;
+        await searchSpells();
+    }
+
+    async function onPageUpdated(e: CustomEvent) {
+        limit = e.detail.limit;
+        offset = e.detail.offset;
+        await searchSpells();
     }
 </script>
 
 <PageWrapper title="Spells" desc="Search and view spell details">
     <PageSection>
-        <SearchInput label="Search Spells" on:change={async (e) => await searchSpells(e.detail.query, e.detail.take)}/>
+        <SearchInput label="Search Spells" on:input={async (e) => await onQueryUpdated(e.detail)}/>
+        <PageSettings on:update={onPageUpdated} bind:count={spells.length}/>
         <Table>
             <TableHead>
                 <th class="table-cell-fit">Level</th>

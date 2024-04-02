@@ -10,21 +10,19 @@
     const dispatch = createEventDispatcher();
     let creatures: Creature[] = []
 
-    async function searchCreatures(query: string, take: number) {
-        creatures = await fetch(routes.api_creatures(query, take)).then(r => r.json());
+    onMount(async () => await searchCreatures(""))
+
+    async function searchCreatures(query: string) {
+        creatures = await fetch(routes.api_creatures(query)).then(r => r.json());
     }
 
     function creatureClicked(creature: Creature) {
         dispatch("select", creature);
     }
-
-    onMount(async () => {
-        await searchCreatures("", 5);
-    })
 </script>
 
 <div class="space-y-4">
-    <SearchInput label="Search Creatures" on:change={async (e) => await searchCreatures(e.detail.query, e.detail.take)}/>
+    <SearchInput label="Search Creatures" on:input={async (e) => await searchCreatures(e.detail)}/>
 
     <Table>
         <TableHead>

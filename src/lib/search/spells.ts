@@ -23,8 +23,17 @@ export function buildSpellIndex() {
 }
 
 export function searchSpells(query: string, limit: number = 5, offset: number = 0): Spell[] {
-    const options: any = { limit: limit, offset: offset, suggest: true };
-    if (!query.length) return spells.slice(offset, offset + limit);
+    if (!query.length) {
+        return spells.slice(offset, offset + limit);
+    }
+
+    const options: FlexSearch.SearchOptions = {
+        limit: limit,
+        offset: offset,
+        suggest: true,
+    };
+
     let results = spellIndex.search(query, options);
+
     return results.map(r => spells[r as number]);
 }
