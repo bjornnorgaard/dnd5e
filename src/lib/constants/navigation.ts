@@ -1,4 +1,4 @@
-import { Home, Library, Rabbit, Swords } from "lucide-svelte";
+import { Library, Rabbit, Swords } from "lucide-svelte";
 import { routes } from "$lib/constants/routes";
 
 export interface NavRoute {

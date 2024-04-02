@@ -42,7 +42,7 @@
         <button class="btn btn-sm" on:click={previous} disabled={page === 0}>
             <ArrowLeft/>
         </button>
-        <button class="btn btn-sm" on:click={reset}>Page {page+1}</button>
+        <button class="btn btn-sm" on:click={reset}>Page {page + 1}</button>
         <button class="btn btn-sm" on:click={next} disabled={count < limit}>
             <ArrowRight/>
         </button>

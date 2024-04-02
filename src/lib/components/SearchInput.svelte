@@ -9,7 +9,7 @@
     let query: string = "";
 
     function emitUpdate() {
-        dispatch("input", query );
+        dispatch("input", query);
     }
 </script>
 
