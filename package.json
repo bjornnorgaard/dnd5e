@@ -21,7 +21,7 @@
     "@types/node": "^20.11.26",
     "@vercel/analytics": "^1.2.2",
     "autoprefixer": "^10.4.16",
-    "dexie": "^4.0.1-beta.14",
+    "dexie": "^4.0.1",
     "flexsearch": "^0.7.43",
     "lucide-svelte": "^0.359.0",
     "postcss": "^8.4.32",
