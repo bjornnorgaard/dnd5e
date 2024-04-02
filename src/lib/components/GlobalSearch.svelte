@@ -23,6 +23,7 @@
         if ((event.ctrlKey || event.metaKey) && event.key === "k") {
             query = "";
             dialog?.showModal();
+            event.preventDefault();
         }
     }
 
