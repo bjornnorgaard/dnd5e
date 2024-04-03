@@ -2,12 +2,27 @@
     import { Autocomplete, type AutocompleteOption } from "@skeletonlabs/skeleton";
     import { goto } from "$app/navigation";
     import { onMount } from "svelte";
+    import { globalSearch, type GlobalSearchState } from "$lib/stores/global-search";
 
     let query: string = "";
     let dialog: HTMLDialogElement | null = null;
     let results: AutocompleteOption<string>[] = [];
 
-    onMount(() => document.addEventListener("click", () => dialog?.close()));
+    onMount(() => {
+        const unsub = globalSearch.subscribe((s: GlobalSearchState) => {
+            s.isOpen ? dialog?.showModal() : dialog?.close();
+            query = "";
+        });
+
+        const closeDialog = () => globalSearch.close();
+        const backdrop = document.getElementById("backdrop");
+        backdrop?.addEventListener("click", closeDialog);
+
+        return () => {
+            backdrop?.removeEventListener("click", closeDialog);
+            unsub();
+        }
+    });
 
     async function search() {
         if (!query.length) return;
@@ -17,25 +32,24 @@
 
     async function onWindowKeydown(event: KeyboardEvent) {
         if (event.key === "Escape") {
-            dialog?.close();
+            globalSearch.close();
         }
 
         if ((event.ctrlKey || event.metaKey) && event.key === "k") {
-            query = "";
-            dialog?.showModal();
             event.preventDefault();
+            globalSearch.open();
         }
     }
 
     async function onInputKeydown(event: KeyboardEvent) {
         if (event.key !== "Enter") return;
         if (!results.length) return;
-        dialog?.close();
+        globalSearch.close();
         await goto(results[0].value);
     }
 
     async function onSelection(event: CustomEvent<AutocompleteOption<string>>) {
-        dialog?.close();
+        globalSearch.close();
         await goto(event.detail.value);
     }
 </script>
@@ -44,7 +58,7 @@
 
 <dialog bind:this={dialog} class="bg-transparent">
     <div class="fixed top-0 left-0 h-screen w-screen opacity-80 bg-surface-800"></div>
-    <div class="fixed top-0 left-0 h-screen w-screen p-4">
+    <div class="fixed top-0 left-0 h-screen w-screen p-4" id="backdrop">
         <div class="mx-auto w-full max-w-xl rounded-2xl mt-[10vw] space-y-4 card variant-filled-surface">
             <input type="search" placeholder="Search everything" bind:value={query} on:keydown={onInputKeydown} on:input={search} class="rounded-t-2xl rounded-b-none border-0 px-4 pt-3 text-4xl text-neutral-300 input">
             <Autocomplete options={results} on:selection={onSelection}/>
