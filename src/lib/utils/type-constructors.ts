@@ -1,6 +1,6 @@
 import { type Creature, defaultCreature } from "$lib/types/creature";
 import { newUUID } from "$lib/utils/uuid";
-import type { Encounter } from "$lib/utils/database";
+import type { Encounter } from "$lib/database/database";
 
 export interface NewPlayerInput {
     name: string;

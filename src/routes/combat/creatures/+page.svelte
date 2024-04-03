@@ -1,7 +1,7 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
-    import { db } from "$lib/utils/database";
+    import { db } from "$lib/database/database";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import { newPlayer } from "$lib/utils/type-constructors.js";
     import type { Creature } from "$lib/types/creature";

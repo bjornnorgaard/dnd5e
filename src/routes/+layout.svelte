@@ -11,10 +11,33 @@
     import CreatureStatblock from "$lib/components/CreatureStatblock.svelte";
     import GlobalSearch from "$lib/components/GlobalSearch.svelte";
     import OpenGraph from "$lib/components/OpenGraph.svelte";
+    import { onMount } from "svelte";
+    import { tryPersistWithoutPromtingUser } from "$lib/database/persistence";
+    import { goto } from "$app/navigation";
+    import { routes } from "$lib/constants/routes";
 
     storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
-
     inject({ mode: dev ? 'development' : 'production' });
+
+    onMount(async () => {
+        await initStoragePersistence();
+    })
+
+    async function initStoragePersistence() {
+        const res = await tryPersistWithoutPromtingUser();
+        switch (res) {
+            case "never":
+                console.log("Not possible to res storage");
+                break;
+            case "persisted":
+                console.log("Successfully persisted storage silently");
+                break;
+            case "prompt":
+                console.log("Not persisted, but we may prompt user when we want to.");
+                await goto(routes.persistence())
+                break;
+        }
+    }
 </script>
 
 <OpenGraph/>

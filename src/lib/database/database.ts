@@ -16,7 +16,7 @@ export class TrackerDatabase extends Dexie {
     encounters!: Table<Encounter>;
 
     constructor() {
-        super('dnd-5th-by-bear');
+        super('dndbybear');
         this.version(1).stores({
             creatures: '&id, slug, is_player',
             encounters: '&id',

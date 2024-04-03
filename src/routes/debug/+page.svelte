@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { addDefaultPlayers } from "$lib/utils/database";
+    import { addDefaultPlayers } from "$lib/database/database";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
 </script>

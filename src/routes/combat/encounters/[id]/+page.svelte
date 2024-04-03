@@ -1,6 +1,6 @@
 <script lang="ts">
     import { liveQuery } from "dexie";
-    import { addAllPlayersToEncounter, addCreatureToEncounter, addPlayerToEncounter, db, deleteEncounter, removeAllPlayersFromEncounter, removeCreatureFromEncounter, updateCreature } from "$lib/utils/database";
+    import { addAllPlayersToEncounter, addCreatureToEncounter, addPlayerToEncounter, db, deleteEncounter, removeAllPlayersFromEncounter, removeCreatureFromEncounter, updateCreature } from "$lib/database/database";
     import MonsterSearch from "$lib/components/CreatureSearch.svelte";
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";

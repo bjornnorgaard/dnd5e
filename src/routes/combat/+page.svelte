@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { db } from "$lib/utils/database";
+    import { db } from "$lib/database/database";
     import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";

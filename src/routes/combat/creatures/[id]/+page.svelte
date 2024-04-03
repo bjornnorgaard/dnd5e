@@ -2,7 +2,7 @@
     import { liveQuery, type UpdateSpec } from "dexie";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { db } from "$lib/utils/database";
+    import { db } from "$lib/database/database";
     import type { Creature } from "$lib/types/creature";
 
     export let data;
