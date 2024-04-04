@@ -3,11 +3,38 @@
     import { goto } from "$app/navigation";
     import { routes } from "$lib/constants/routes";
     import PageSection from "$lib/components/PageSection.svelte";
-    import { persist, showEstimatedQuota } from "$lib/database/persistence";
+    import { persist } from "$lib/database/persistence";
     import { onMount } from "svelte";
+    import { error } from "@sveltejs/kit";
 
     onMount(async () => {
-        await showEstimatedQuota();
+        const persisted = await navigator.storage.persisted();
+        console.log("Persisted", persisted);
+
+        const estimate = await navigator.storage.estimate();
+        console.log("Storage estimate", estimate);
+
+        if (persisted) {
+            await goto(routes.combat());
+        }
+
+        const permission = await navigator.permissions.query({ name: "persistent-storage" });
+        console.log("Permission", permission);
+        console.log("Permission state", permission.state);
+
+        switch (permission.state) {
+            case "denied":
+                error(500, "Permission denied to persist data");
+                break;
+            case "granted":
+                console.log("Permission granted to persist data");
+                await goto(routes.combat());
+                break;
+            case "prompt":
+                console.log("Permission wants prompt to persist data");
+                break;
+        }
+
     })
 
     const storageExplanation = "The browser may delete the database without " +
@@ -17,11 +44,18 @@
         "not want everything to be stored forever on each site they visit. ";
 
     async function permissionGranted() {
-        const res = await persist()
-        if (!res) {
-            console.error("Failed to persist to browser storage");
+        const storage = navigator.storage;
+        if (!storage) {
+            console.error("Storage API not available");
             return;
         }
+
+        const success = await storage.persist();
+        if (!success) {
+            console.error("Failed to persist to browser storage", success);
+            return;
+        }
+
         await goto(routes.combat());
     }
 </script>

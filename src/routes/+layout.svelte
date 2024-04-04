@@ -12,7 +12,7 @@
     import GlobalSearch from "$lib/components/GlobalSearch.svelte";
     import OpenGraph from "$lib/components/OpenGraph.svelte";
     import { onMount } from "svelte";
-    import { tryPersistWithoutPromtingUser } from "$lib/database/persistence";
+    import { tryPersistWithoutPromptingUser } from "$lib/database/persistence";
     import { goto } from "$app/navigation";
     import { routes } from "$lib/constants/routes";
 
@@ -24,7 +24,7 @@
     })
 
     async function initStoragePersistence() {
-        const res = await tryPersistWithoutPromtingUser();
+        const res = await tryPersistWithoutPromptingUser();
         switch (res) {
             case "never":
                 console.log("Not possible to res storage");
