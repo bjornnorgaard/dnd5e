@@ -38,10 +38,6 @@
         await db.encounters.update(data.id, { title: e.target.value });
     }
 
-    async function editCreature(id: string) {
-        await goto(routes.combat_creature(id));
-    }
-
     async function togglePlayer(id: string) {
         if (!$encounter) {
             console.error("No encounter found");
