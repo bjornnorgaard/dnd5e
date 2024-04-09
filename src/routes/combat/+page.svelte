@@ -51,7 +51,7 @@
             </TableBody>
         </Table>
         <div>
-            <button on:click={async () => await createPlayer()} class="btn variant-filled-primary">New Player</button>
+            <button on:click={async () => await createPlayer()} class="btn btn-sm variant-filled-primary">New Player</button>
         </div>
     </PageSection>
     <PageSection title="Encounters" desc="Encounters are a collection of monsters and players">
@@ -72,7 +72,7 @@
             </TableBody>
         </Table>
         <div>
-            <button on:click={async () => await createEncounter()} class="btn variant-filled-primary">New Encounter</button>
+            <button on:click={async () => await createEncounter()} class="btn btn-sm variant-filled-primary">New Encounter</button>
         </div>
     </PageSection>
 </PageWrapper>
