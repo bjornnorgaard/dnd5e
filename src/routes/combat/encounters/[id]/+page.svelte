@@ -151,6 +151,10 @@
             {/if}
         </div>
 
+        <PageSection title="Add creatures" desc="Search and click to add creatures to encounter">
+            <MonsterSearch on:select={e => addCreatureToEncounter(data.id, e.detail.slug)} limit={3}/>
+        </PageSection>
+
         <PageSection title="Combatants" desc="Click HP and initiative in rows to edit">
             <Table>
                 <TableHead>
@@ -226,10 +230,6 @@
                     </button>
                 {/if}
             </div>
-        </PageSection>
-
-        <PageSection title="Add creatures" desc="Search and click to add creatures to encounter">
-            <MonsterSearch on:select={e => addCreatureToEncounter(data.id, e.detail.slug)}/>
         </PageSection>
 
         <PageSection title="Danger Zone" desc="Ye' be forewarned, here be dragons - mind your step">

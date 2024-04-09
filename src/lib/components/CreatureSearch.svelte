@@ -8,12 +8,13 @@
     import { routes } from "$lib/constants/routes";
 
     const dispatch = createEventDispatcher();
+    export let limit = 5;
     let creatures: Creature[] = []
 
     onMount(async () => await searchCreatures(""))
 
     async function searchCreatures(query: string) {
-        creatures = await fetch(routes.api_creatures(query)).then(r => r.json());
+        creatures = await fetch(routes.api_creatures(query, limit)).then(r => r.json());
     }
 
     function creatureClicked(creature: Creature) {
