@@ -184,7 +184,7 @@
                                 {/if}
 
                                 <td class="text-start">
-                                    <a class="anchor" on:click|stopPropagation href={routes.combat_creature(p.id)}>{p.name}</a>
+                                    <a class="hover:anchor" class:anchor={p.current_hit_points > 0} on:click|stopPropagation href={routes.combat_creature(p.id)}>{p.name}</a>
                                 </td>
 
                                 <td class="text-center"
