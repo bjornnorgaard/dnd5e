@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { db } from "$lib/utils/database";
+    import { createNewEncounter, db } from "$lib/utils/database";
     import { liveQuery } from "dexie";
     import { goto } from "$app/navigation";
     import PageWrapper from "$lib/components/PageWrapper.svelte";
@@ -16,9 +16,8 @@
     const players = liveQuery(async () => await db.creatures.where({ is_player: 1 }).toArray());
 
     async function createEncounter() {
-        const e = newEncounter({ title: "Unnamed Encounter" });
-        const createdId = await db.encounters.add(e);
-        await goto(routes.combat_encounter(createdId));
+        const id = await createNewEncounter();
+        await goto(routes.combat_encounter(id));
     }
 
     async function createPlayer() {

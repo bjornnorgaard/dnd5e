@@ -2,7 +2,7 @@
 import Dexie, { type Table } from 'dexie';
 import type { Creature } from "$lib/types/creature";
 import { fetchCreatureBySlug } from "$lib/utils/fetch-creatures";
-import { newPlayer } from "$lib/utils/type-constructors";
+import { newEncounter, newPlayer } from "$lib/utils/type-constructors";
 import { rollDice } from "$lib/utils/dice-roller";
 
 export interface Encounter {
@@ -61,7 +61,7 @@ export async function addPlayerToEncounter(encounterId: string, playerId: string
     }
 
     await db.encounters.update(encounterId, {
-        creatureIds: [ ...encounter.creatureIds, playerId ],
+        creatureIds: [...encounter.creatureIds, playerId],
     });
 }
 
@@ -111,7 +111,7 @@ export async function addCreatureToEncounter(encounterId: string, creatureSlug: 
 
     await db.creatures.add(creature, creature.id);
     await db.encounters.update(encounterId, {
-        creatureIds: [ ...encounter.creatureIds, creature.id ],
+        creatureIds: [...encounter.creatureIds, creature.id],
     });
 }
 
@@ -150,4 +150,10 @@ export async function deleteEncounter(encounterId: string) {
     }
 
     await db.encounters.delete(encounterId);
+}
+
+export async function createNewEncounter(): Promise<string> {
+    const e = newEncounter({ title: "Unnamed Encounter" });
+    await db.encounters.add(e);
+    return e.id;
 }
